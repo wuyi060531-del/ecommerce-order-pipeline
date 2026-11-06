@@ -53,7 +53,7 @@ flowchart LR
 .venv/bin/python -m scripts.check_release
 ```
 
-本快照的**实际测试数量、环境、命令和限制**见[独立验收证据](docs/VALIDATION.md)，不沿用原仓库的 164 项声明。覆盖质量边界、输入保护、真实 SQLite 事务／SQL、重跑、A/B/A、失败恢复、CLI 和发布文件完整性。MySQL 8.4.13 于 2026-10-31 在拆分前工程有历史真实验收；本快照未重新执行 live MySQL。Docker 构建已尝试，但 Docker Hub 鉴权请求超时，未成功构建或运行应用容器；Compose 只做配置校验，远端 GitHub Actions 未运行。
+本快照的**实际测试数量、环境、命令和限制**见[独立验收证据](docs/VALIDATION.md)，不沿用原仓库的 164 项声明。覆盖质量边界、输入保护、真实 SQLite 事务／SQL、重跑、A/B/A、失败恢复、CLI 和发布文件完整性。MySQL 8.4.13 于 2026-10-31 在拆分前工程有历史真实验收；本地 Docker 构建曾因 Docker Hub 鉴权请求超时未完成；随后本快照在 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42222552697) 实际通过 Python 3.10/3.12（各 129 项）、MySQL 8.4 事务／幂等／重启对账，以及 Docker 构建和 SQLite 容器冒烟。
 
 性能工具只接受带 synthetic 标记且哈希匹配的新数据；种子固定、每档新进程与新 SQLite、1000/10000/50000 行串行运行，单档超时 120 秒，升至 50000 行前检查峰值内存。512 MiB 为升级门槛，不是 OS 强制限额。
 
@@ -65,11 +65,11 @@ flowchart LR
 
 ## 范围与归因
 
-一行代表单商品订单；单机、单写者、最后成功加载生效；没有事件时间水位、并发写入或分布式事务。没有企业真实数据、线上用户或生产部署证据。Python 3.12/macOS 为本轮实测环境，Linux CI 矩阵与 Windows 未据此宣称通过。
+一行代表单商品订单；单机、单写者、最后成功加载生效；没有事件时间水位、并发写入或分布式事务。没有企业真实数据、线上用户或生产部署证据。本地实测为 Python 3.12/macOS；Linux CI 已验证 Python 3.10/3.12，Windows 未验证。
 
 - [源码来源及与私有工程的区别](docs/PROVENANCE.md)
 - [第三方依赖许可](docs/THIRD_PARTY.md)
 - [发布前决策](docs/RELEASE_DECISIONS.md)、[项目经历与本人复现要求](docs/PORTFOLIO.md)
 - [逐文件来源映射](docs/SOURCE_MAP.json)、[公开文件 SHA-256 清单](SHA256SUMS.json)
 
-推荐仓库名 `ecommerce-order-pipeline`，名称可用性未查询；尚未创建 GitHub 仓库或 push。
+已上传至所有者的 [GitHub Private 仓库](https://github.com/wuyi060531-del/ecommerce-order-pipeline)，尚未公开，暂不添加 LICENSE。后续改为 Public 须另经所有者确认。

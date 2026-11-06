@@ -59,5 +59,35 @@
   },
   "mysql_live_this_candidate": false,
   "remote_ci": "not run",
-  "license": "pending owner decision"
+  "license": "pending owner decision",
+  "github_private_acceptance": {
+    "date": "2026-11-06",
+    "source_head": "84fc0fa6c5a778e553695a4e482d883bf155a0f8",
+    "run_url": "https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42222552697",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "MySQL 8.4 \u771f\u5b9e\u96c6\u6210",
+        "conclusion": "success"
+      },
+      {
+        "name": "Python 3.10 / SQLite",
+        "conclusion": "success"
+      },
+      {
+        "name": "Python 3.12 / SQLite",
+        "conclusion": "success"
+      },
+      {
+        "name": "Docker \u6784\u5efa\u4e0e SQLite \u5192\u70df",
+        "conclusion": "success"
+      }
+    ],
+    "remote_files": 56,
+    "all_git_blob_hashes_match": true,
+    "readme_html_rendered": true,
+    "browser_visual_check": false,
+    "visibility": "private",
+    "license": "not added"
+  }
 }

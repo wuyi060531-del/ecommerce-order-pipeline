@@ -1,5 +1,14 @@
 # 公开候选独立验收
 
+## GitHub Private 上架实测（2026-11-06）
+
+独立根提交 `84fc0fa` 已上传至所有者的 Private 仓库；远端 56 文件的 Git blob 哈希与本地逐一相等，无原学习仓库父历史。GitHub README HTML 渲染响应正常；未声称进行浏览器视觉检查。
+
+[首轮 Actions 实际运行](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42222552697)四项全部成功：Python 3.10 为 129 passed（5.55 秒），Python 3.12 为 129 passed（5.25 秒、1 warning）；MySQL 8.4 建表、事务、幂等及服务重启对账通过；Docker 镜像构建与只读输入的 SQLite 容器运行通过。该远端结果补齐下述封存时的 MySQL／Docker／CI 缺口，不改变历史本地结果或性能数字。
+
+以下是首次封存时的本地独立验收记录。LICENSE 仍待决定，Private 不等于已开源；Public 需要另行批准。
+
+
 2026-11-06；来源版本 `7f738f8`，公开目录 public-rc1。新建 Python 3.12.14 虚拟环境，安装 requirements-dev / requirements-mysql 并使用 3.12 约束成功，pip check 无冲突。没有复用原虚拟环境或数据库。
 
 ## 实际运行

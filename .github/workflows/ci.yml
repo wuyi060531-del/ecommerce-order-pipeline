@@ -1,0 +1,126 @@
+name: Python 数据管道
+
+"on":
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }} / SQLite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: 安装固定版本开发依赖
+        run: python -m pip install -r requirements-dev.txt
+      - name: 检查正式实现、新脚本与正式测试
+        run: python -m ruff check src/order_pipeline scripts tests/v1
+      - name: 正式测试（包括 SQLite 实际入库）
+        run: python -m pytest tests/v1 -q
+      - name: README SQLite 演示及重跑对账
+        run: python -m scripts.demo_sqlite
+      - name: 验证 YAML 能够解析
+        run: |
+          python -c "from pathlib import Path; import yaml; [yaml.safe_load(Path(p).read_text()) for p in ['compose.yaml', '.github/workflows/ci.yml']]; print('YAML parse: OK')"
+
+  mysql:
+    name: MySQL 8.4 真实集成
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-temporary-root-password
+          MYSQL_DATABASE: order_pipeline_ci_test
+          MYSQL_USER: pipeline_ci_test
+          MYSQL_PASSWORD: ci-temporary-user-password
+        ports:
+          - 3306:3306
+        options: >-
+          --memory=1g
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+          --health-start-period=30s
+    env:
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: order_pipeline_ci_test
+      MYSQL_USER: pipeline_ci_test
+      MYSQL_PASSWORD: ci-temporary-user-password
+      MYSQL_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-mysql.txt
+      - name: 安装运行与 MySQL 驱动依赖
+        run: python -m pip install -r requirements.txt -r requirements-mysql.txt
+      - name: 真实建表、ETL、SQL、幂等及事务验收
+        run: python -m scripts.verify_mysql
+      - name: 服务重启后，持久化数据仍可分析
+        run: |
+          python -m src.order_pipeline run --backend mysql --input data/raw/orders.csv --output "$RUNNER_TEMP/mysql-before-restart"
+          docker restart "${{ job.services.mysql.id }}"
+          ready=0
+          for attempt in $(seq 1 60); do
+            if [ "$(docker inspect --format '{{.State.Health.Status}}' '${{ job.services.mysql.id }}')" = "healthy" ]; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          test "$ready" = 1
+          python -m src.order_pipeline analyze --backend mysql --output "$RUNNER_TEMP/mysql-after-restart"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          base = Path(os.environ["RUNNER_TEMP"])
+          before = json.loads((base / "mysql-before-restart/database_summary.json").read_text())
+          after = json.loads((base / "mysql-after-restart/database_summary.json").read_text())
+          assert before == after, "MySQL 重启前后 SQL 指标不一致"
+          print("MySQL restart persistence: OK")
+          PY
+
+  container:
+    name: Docker 构建与 SQLite 冒烟
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: 构建正式镜像
+        run: docker build --tag order-pipeline:ci .
+      - name: 容器实际运行，原始数据只读挂载
+        run: |
+          docker run --rm --memory=1g --read-only --tmpfs /tmp:size=128m \
+            --mount type=bind,source="$PWD/data/raw",target=/data/raw,readonly \
+            --mount type=volume,target=/data/processed \
+            order-pipeline:ci

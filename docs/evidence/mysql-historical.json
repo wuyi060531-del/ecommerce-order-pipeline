@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-31",
+  "source_commit": "7c61095",
+  "outcome": "passed",
+  "sql_summary": {
+    "backend": "mysql",
+    "paid_orders": 11,
+    "sales_amount": "1223.70",
+    "sales_amount_cents": 122370,
+    "scope": "all_committed_orders",
+    "total_orders": 26
+  },
+  "cli_csv_equal": {
+    "orders_clean.csv": true,
+    "quality_issues.csv": true,
+    "batch_city_sales.csv": true,
+    "batch_product_sales.csv": true,
+    "city_sales.csv": true,
+    "product_sales.csv": true
+  },
+  "restart_sql_equal": true,
+  "after_replay_counts": {
+    "orders": 26,
+    "etl_runs": 1,
+    "dq_issues": 7
+  },
+  "server_version": "8.4.13",
+  "scope": "Historical pre-extraction implementation, original private sample; not this public candidate live acceptance"
+}

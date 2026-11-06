@@ -1,0 +1,16 @@
+.venv/
+.git/
+.local/
+logs/
+data/processed/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.sqlite3*
+.DS_Store

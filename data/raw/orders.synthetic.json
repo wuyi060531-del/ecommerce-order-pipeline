@@ -1,0 +1,16 @@
+{
+  "dataset_kind": "synthetic",
+  "generator": "scripts.create_demo_data.sample_bytes",
+  "generator_version": "demo-v1",
+  "external_inputs": [],
+  "rows": 30,
+  "source_sha256": "378d5ea6bd1e976e442d7f361ec89a37a566d8d6ae0661fb1588d5c2fb18caaf",
+  "expected": {
+    "accepted_orders": 26,
+    "quarantined_rows": 3,
+    "duplicate_rows": 1,
+    "paid_orders": 11,
+    "sales_amount_cents": 6600,
+    "quality_issue_records": 7
+  }
+}

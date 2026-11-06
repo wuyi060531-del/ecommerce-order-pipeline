@@ -1,0 +1,33 @@
+# 架构与业务契约
+
+`src/order_pipeline/__main__.py` 处理 CLI 与日志；`quality.py` 校验文本 CSV 并逐行审计；`transforms.py` 持有独立生产转换；`pipeline.py` 编排、对账和发布文件；`storage.py` 实现 SQLite / MySQL 事务与小增量。SQL 来源为 `sql/`，不依赖外部学习模块。
+
+## 输入、质量和金额
+
+8 个必需字段：order_id、user_id、product_name、quantity、unit_price、order_time、city、status。文件／编码／表头无法可靠解析时中止；业务坏行隔离。空 ID、过长文本、非正整数数量、非法价格、未知状态及冲突订单编号均不可入库。
+
+完全相同记录去掉多余副本；同批同 ID 但字段不同的记录全部隔离，不猜版本。城市空值补「未知」并警告；日期按固定格式转换，无效值保留 NULL 并警告。审计包含逻辑记录序号（含表头）、原字段 JSON、规则、动作、文件哈希、run_id、处置和数据库状态。一行可以对应多个问题。
+
+`原始行 = 接收 + 隔离 + 重复副本`。警告行可以接收，不能再从接收数中扣除。
+
+单价使用 Decimal，最多两位小数；单笔金额上限 9000000000000000 分。SQL 金额存整数分，不使用 FLOAT。SQLite 全库 paid 合计超过 2^63-1 时整批拒绝并回滚。paid 是销售统计范围，completed/cancelled 保留明细但不计销售额，日期 NULL 的有效 paid 仍计金额。
+
+## 三张表
+
+| 表 | 键与内容 | 关系 |
+| --- | --- | --- |
+| orders | order_id 主键；数量、单价分、金额分、时间、城市、状态、源记录序号 | last_run_id → etl_runs |
+| etl_runs | run_id 主键；输入哈希、来源名、质量指标、导入时间 | 规则版本＋编码＋输入字节哈希形成批次标识 |
+| dq_issues | (run_id, issue_number) 联合主键；原值、规则、原因、动作 | run_id → etl_runs |
+
+MySQL 使用 InnoDB、BIGINT、DATETIME(6)、JSON 和区分大小写的 utf8mb4_bin，业务约束与键见 `sql/schema_mysql.sql`。SQLite 使用 INTEGER / TEXT；每个连接显式启用外键。
+
+## 幂等、恢复和分析
+
+事务内先比较当前订单的 9 个业务字段，只插入新增或更新变化行；批次元数据与问题记录未变时也不重写。不是仅凭已见 run_id 跳过整个批次：A → B → A 必须恢复 A。未变行保留最后实际值写入来源。
+
+同批写失败整批回滚；跨批同编号按最后成功加载生效，当前批没出现的旧订单保留，隔离记录不会自动删旧订单。没有可靠业务更新时间，因此没有事件时间水位或“最新业务版本”保证。
+
+数据库提交和报告文件发布是独立资源。导出前失败不会入库；提交后发布失败保留／恢复旧报告，修复后幂等重跑。manifest 用哈希检测意外修改，不是防篡改签名。
+
+`batch_*` 是本批 paid 聚合；`city_sales.csv` / `product_sales.csv` / `database_summary.json` 是全库当前已提交数据。两者在多批次后可能不同，必须先对齐范围再核对。

@@ -1,0 +1,211 @@
+{
+  "source_commit": "7f738f8ba4c0bc2017f2f65fdc77cfe6bb0f2a9c",
+  "history_copied": false,
+  "copied_allowlist": [
+    {
+      "path": "src/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "adapted": false
+    },
+    {
+      "path": "src/order_pipeline/__init__.py",
+      "source_sha256": "a2fdce7bb223fb913ca9454457efa9e13388db2249703bd3d39c6be26e79ba29",
+      "public_sha256": "86e0fd44a3d201979ae8bfc2e5cacbe7454e47002a1d1ce342fc8d4fe5d25f19",
+      "adapted": true
+    },
+    {
+      "path": "src/order_pipeline/__main__.py",
+      "source_sha256": "64b16c3f2ddd2d6ceae58de5f12267445615d8e694d51abf8258a7b2b205bf67",
+      "public_sha256": "64b16c3f2ddd2d6ceae58de5f12267445615d8e694d51abf8258a7b2b205bf67",
+      "adapted": false
+    },
+    {
+      "path": "src/order_pipeline/errors.py",
+      "source_sha256": "f79ab6ea3d44067e7b07472c0c4df2e8c083a925adf358403f5f1fb4f6825f3e",
+      "public_sha256": "f79ab6ea3d44067e7b07472c0c4df2e8c083a925adf358403f5f1fb4f6825f3e",
+      "adapted": false
+    },
+    {
+      "path": "src/order_pipeline/quality.py",
+      "source_sha256": "30b5e4b3a6afd8c3800d8704ba9670f97bd119af36d88e25b268e00d2e97cb1a",
+      "public_sha256": "bba3088d6791c2cdaef0a56929961cca242dacfa20c709ee9a53e98924c87dda",
+      "adapted": true
+    },
+    {
+      "path": "src/order_pipeline/pipeline.py",
+      "source_sha256": "602ae1da4ccc0c5cbe43249de1f6a5155addd797be2dd1b085934beffb83c600",
+      "public_sha256": "feff3ba4ba95e00035f5c5a9e88faed971e9df03bb5ccc4dce220153b4361164",
+      "adapted": true
+    },
+    {
+      "path": "src/order_pipeline/storage.py",
+      "source_sha256": "77bca408494ef98558c64e5938a947a1da69a7172e0167635dc0bc0b1e7cd82f",
+      "public_sha256": "77bca408494ef98558c64e5938a947a1da69a7172e0167635dc0bc0b1e7cd82f",
+      "adapted": false
+    },
+    {
+      "path": "sql/schema_mysql.sql",
+      "source_sha256": "d28851e059a430375ce06c9bfe40fed119f4ceff296f54e7b67ae6c5d6b0018f",
+      "public_sha256": "d28851e059a430375ce06c9bfe40fed119f4ceff296f54e7b67ae6c5d6b0018f",
+      "adapted": false
+    },
+    {
+      "path": "sql/analysis_mysql.sql",
+      "source_sha256": "8a34470983594d9e6a11a2e5bc64869e7c85f3155b504b1112bff0e7b581d6c5",
+      "public_sha256": "8a34470983594d9e6a11a2e5bc64869e7c85f3155b504b1112bff0e7b581d6c5",
+      "adapted": false
+    },
+    {
+      "path": "scripts/benchmark.py",
+      "source_sha256": "8f823953cf098631d62e0ebedffd6e6ff241c5bb8a07bb71b01695c8e667e17f",
+      "public_sha256": "2bd772f3fe5167281643adac43b848d625057956e2ff62f1cf46a1393d9f0f6b",
+      "adapted": true
+    },
+    {
+      "path": "scripts/generate_orders.py",
+      "source_sha256": "1a41e683fe03f013d91d99bb7b6723b8a526be0c4183b517418542a0f6bcb452",
+      "public_sha256": "1a41e683fe03f013d91d99bb7b6723b8a526be0c4183b517418542a0f6bcb452",
+      "adapted": false
+    },
+    {
+      "path": "scripts/verify_mysql.py",
+      "source_sha256": "1b89973c94dab4efccef768482ae345ec14df9489f9d61b8bc410a73f354764a",
+      "public_sha256": "8f6d8f48f84968ba279be4192030c2965391ea833695e332e1dbfdc1b0b26f84",
+      "adapted": true
+    },
+    {
+      "path": "scripts/demo_sqlite.py",
+      "source_sha256": "0bceb8b65c0e9aab5f944e6354e8b591a4b916e23431a69c60abd0b46fc745aa",
+      "public_sha256": "f4e2dc3dcf4264a9f3cfb9de59c76dfb90bc0da2872c16bc83f5571787076b8f",
+      "adapted": true
+    },
+    {
+      "path": "tests/v1/test_quality.py",
+      "source_sha256": "446a937ea5cc3e61577fbfa569cc7cb1c587db9e98441015e9308a87a9bac27a",
+      "public_sha256": "9da1c3a80fe2906cae0e636ef1fa82bcc52aceb173dee1d5ede7cbc40d487fae",
+      "adapted": true
+    },
+    {
+      "path": "tests/v1/test_pipeline.py",
+      "source_sha256": "8be8f0c0e0b3b7149958567fc52896dbe5d3b148a9c809adf5b240aa22b54b89",
+      "public_sha256": "aa8763b99d458e225739ef21af6d2634f07d724e4732036fbc1086f0a578db89",
+      "adapted": true
+    },
+    {
+      "path": "tests/v1/test_storage.py",
+      "source_sha256": "a11ea9672c76359af31a74bde9ee3c4606088943c5355111c988dcf21b889174",
+      "public_sha256": "a11ea9672c76359af31a74bde9ee3c4606088943c5355111c988dcf21b889174",
+      "adapted": false
+    },
+    {
+      "path": "tests/v1/test_storage_v11.py",
+      "source_sha256": "830ac84fa085105eba64086f6b3b7b6553df5d2578e159f9a782c71a411357e8",
+      "public_sha256": "830ac84fa085105eba64086f6b3b7b6553df5d2578e159f9a782c71a411357e8",
+      "adapted": false
+    },
+    {
+      "path": "tests/v1/test_pipeline_v11.py",
+      "source_sha256": "6892c5520fecb35c300336ccf40ee7089c0ac17840de5a82eee17954a4219bb8",
+      "public_sha256": "6892c5520fecb35c300336ccf40ee7089c0ac17840de5a82eee17954a4219bb8",
+      "adapted": false
+    },
+    {
+      "path": "tests/v1/test_benchmark_tools.py",
+      "source_sha256": "bba391e26f341e8fbb2887127926f609c732a0fd173e08b506a71dd5dcaebe6a",
+      "public_sha256": "bba391e26f341e8fbb2887127926f609c732a0fd173e08b506a71dd5dcaebe6a",
+      "adapted": false
+    },
+    {
+      "path": "tests/v1/test_tooling.py",
+      "source_sha256": "1b40d92ff409b9244ef2b05a58e9b7953841e890006081ffc510c8bb69a3d552",
+      "public_sha256": "0c80b09aeba0cd8ff352cdc08d91791fcb2b69c200937b98f1758073f5f4d4ab",
+      "adapted": true
+    },
+    {
+      "path": "requirements.txt",
+      "source_sha256": "a93fcd53021dfe72cebe4ac4f8f3335f9bd727b42c93df0f414c153ed5290a2c",
+      "public_sha256": "a93fcd53021dfe72cebe4ac4f8f3335f9bd727b42c93df0f414c153ed5290a2c",
+      "adapted": false
+    },
+    {
+      "path": "requirements-dev.txt",
+      "source_sha256": "d563ddf082ea701fb2a3f83d997987355aefbdabd2b608044e9e5952f75a55b4",
+      "public_sha256": "d563ddf082ea701fb2a3f83d997987355aefbdabd2b608044e9e5952f75a55b4",
+      "adapted": false
+    },
+    {
+      "path": "requirements-mysql.txt",
+      "source_sha256": "3af3cee65c0e32aff16c8f6c1a4a1ef4c55fb2228198c3ae7a27561794b0919f",
+      "public_sha256": "3af3cee65c0e32aff16c8f6c1a4a1ef4c55fb2228198c3ae7a27561794b0919f",
+      "adapted": false
+    },
+    {
+      "path": "constraints-demo-py312.txt",
+      "source_sha256": "4dd15780319d2924257d8efb59aa0edba179abc1f54ea7f324b426d6b78cede8",
+      "public_sha256": "4dd15780319d2924257d8efb59aa0edba179abc1f54ea7f324b426d6b78cede8",
+      "adapted": false
+    },
+    {
+      "path": "pytest.ini",
+      "source_sha256": "8418ce600f04ea5a334d1e57607f773d7d79d8697c26cc6afcfa81b2589520e1",
+      "public_sha256": "8418ce600f04ea5a334d1e57607f773d7d79d8697c26cc6afcfa81b2589520e1",
+      "adapted": false
+    },
+    {
+      "path": "ruff.toml",
+      "source_sha256": "a67de23ad813643d27cbe188bc9df1822bc9143b382d5cc1c2ad8d6d1f37df05",
+      "public_sha256": "4da6378693016b11ca674b0e74c3d22a05d7189ed6ddc0404faa7d70516a508a",
+      "adapted": true
+    },
+    {
+      "path": "Dockerfile",
+      "source_sha256": "ed6323f609105f82bad8f4e58bd0bc5318dd0da1d6080ea4816ec5bc15ffdffd",
+      "public_sha256": "b18ce2e68e8392cc2ecb1a3d3a77830ad4041d0091a1340d860071ff3cf41a26",
+      "adapted": true
+    },
+    {
+      "path": ".dockerignore",
+      "source_sha256": "53d6e75e507ba64607e0c8822f4a3bad5e390402b2ccb46f48e98ca6c5a6955b",
+      "public_sha256": "fbdeb7ad479edf1342d960883ec12059f2e1e19228786d1d66bbe78df11da873",
+      "adapted": true
+    },
+    {
+      "path": ".env.example",
+      "source_sha256": "c1841f9102dad525b82ed206f5fee52647f6ddb59e6de4f501596a4f590e74ff",
+      "public_sha256": "c1841f9102dad525b82ed206f5fee52647f6ddb59e6de4f501596a4f590e74ff",
+      "adapted": false
+    },
+    {
+      "path": "compose.yaml",
+      "source_sha256": "9e3e389ee5eb9aa026f8a6608dcc8a61e849e06e02c8a60a5afcb4cd89c92519",
+      "public_sha256": "9e3e389ee5eb9aa026f8a6608dcc8a61e849e06e02c8a60a5afcb4cd89c92519",
+      "adapted": false
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "a1e344a496348634cc6757521ef4f370fb9a05c0d2c759d5d5604a53b1c3b4d9",
+      "public_sha256": "a1e344a496348634cc6757521ef4f370fb9a05c0d2c759d5d5604a53b1c3b4d9",
+      "adapted": false
+    }
+  ],
+  "generated_asset_paths": [
+    "src/order_pipeline/transforms.py",
+    "scripts/create_demo_data.py",
+    "scripts/check_release.py",
+    "tests/v1/test_public_snapshot.py",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/RUNNING.md",
+    "docs/PROVENANCE.md",
+    "data/README.md",
+    "docs/THIRD_PARTY.md",
+    "docs/RELEASE_DECISIONS.md",
+    "docs/PORTFOLIO.md"
+  ],
+  "omitted_test_files": [
+    "test_learning_isolation.py",
+    "test_challenge_workflow.py"
+  ],
+  "original_sample_copied": false
+}

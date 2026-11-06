@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-06",
+  "candidate": "public-rc1",
+  "source_commit": "7f738f8ba4c0bc2017f2f65fdc77cfe6bb0f2a9c",
+  "clean_install": true,
+  "environment": "3.12.14",
+  "pytest": {
+    "command": ".venv/bin/python -m pytest tests/v1 -q --junitxml=.local/pytest.xml",
+    "tests": 129,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 22.833,
+    "warnings": 1
+  },
+  "demo": {
+    "backend": "sqlite",
+    "counts": {
+      "orders": 26,
+      "etl_runs": 1,
+      "dq_issues": 7
+    },
+    "sales_amount_cents": 6600,
+    "rerun_artifacts_equal": true,
+    "input_unchanged": true,
+    "check_exit": 1,
+    "cli_steps": 5,
+    "artifact_sha256": {
+      "report.md": "80fbf52db5798d59a8d56a6d26f92bdcbbcf22fb923254e622df4d760c80c9bd",
+      "product_sales.csv": "37f8c2b7ce14647d7c5c17bb2d126651d4916dd843a810e86433767bf2aa145b",
+      "batch_product_sales.csv": "37f8c2b7ce14647d7c5c17bb2d126651d4916dd843a810e86433767bf2aa145b",
+      "quality_metrics.json": "75282fddcfc1b8e472ef0eaeb5c5b45515f6385066c05957d5b501d6920d8a73",
+      "batch_city_sales.csv": "3fbede57854bc38fb60c7edb06c1dc724264a0f5e95b09b98ceb5035e65fe333",
+      "orders_clean.csv": "f487e79ff89aa5a2fc34077d8c3ff3a00ce2406bb4cee3d8247668356ab7c0f7",
+      "database_summary.json": "218214853b3b4fe1d5bc7a32f0768b274bdf25826411188f48d3889e8167e2df",
+      "manifest.json": "32bf8fbb772600f835424af1963211d046b5715fa7b90a8fa3c00387073129b9",
+      "city_sales.csv": "3fbede57854bc38fb60c7edb06c1dc724264a0f5e95b09b98ceb5035e65fe333",
+      "quality_issues.csv": "2797b5e98f3dc3e478a8de4445b7557528b17b65c576cd5fa2f117ed94025adf"
+    }
+  },
+  "cli_errors": {
+    "missing_input_exit": 2,
+    "bad_schema_exit": 2,
+    "success_artifacts_created": false
+  },
+  "original_rules_on_new_sample": "metrics equal (project Python 3.9.6 vs public Python 3.12)",
+  "static": {
+    "ruff": "passed",
+    "yaml_and_workflow_shell": "passed",
+    "compose_config": "passed"
+  },
+  "docker": {
+    "client": "29.8.2",
+    "engine": "29.8.2",
+    "engine_arch": "linux/arm64",
+    "build": "attempted_failed",
+    "reason": "Docker Hub anonymous auth.docker.io token fetch timeout before application image build",
+    "container_run": "not run"
+  },
+  "mysql_live_this_candidate": false,
+  "remote_ci": "not run",
+  "license": "pending owner decision"
+}

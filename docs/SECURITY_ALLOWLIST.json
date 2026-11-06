@@ -1,0 +1,79 @@
+[
+  {
+    "path": "compose.yaml",
+    "line": 7,
+    "category": "credential_literal",
+    "line_sha256": "b76d4ea5e3a5c3804d25c3aec10257546b3a2e6fee2377bf26b3fe89c6175553",
+    "reason": "required environment variable substitution, no password value"
+  },
+  {
+    "path": "compose.yaml",
+    "line": 10,
+    "category": "credential_literal",
+    "line_sha256": "a191bb3144aee4e3cab9037817d67d4d32241865177f89116c403217bf3cf7f7",
+    "reason": "required environment variable substitution, no password value"
+  },
+  {
+    "path": "compose.yaml",
+    "line": 39,
+    "category": "credential_literal",
+    "line_sha256": "a191bb3144aee4e3cab9037817d67d4d32241865177f89116c403217bf3cf7f7",
+    "reason": "required environment variable substitution, no password value"
+  },
+  {
+    "path": ".env.example",
+    "line": 6,
+    "category": "credential_literal",
+    "line_sha256": "acd483bdbd7d948d5b999091dbbb79fa780d56105ef228f6111ed123ed2fcf3a",
+    "reason": "placeholder password, not a credential"
+  },
+  {
+    "path": "tests/v1/test_storage_v11.py",
+    "line": 295,
+    "category": "credential_literal",
+    "line_sha256": "d20638ab37bf0eec9c37cc7ee03d13e3330fdc9cd3307fe83ee8ba6403aba669",
+    "reason": "dummy credential in monkeypatched environment"
+  },
+  {
+    "path": "tests/v1/test_storage.py",
+    "line": 171,
+    "category": "credential_literal",
+    "line_sha256": "c70b457658347f8eb070e7e64889044a0dc311af8a8fdeb74df2b138428f0517",
+    "reason": "dummy credential in monkeypatched environment"
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "line": 51,
+    "category": "credential_literal",
+    "line_sha256": "e9941c87ab44f8126b78980c739391e7d9a8cdf1f061fdee0b24c8df7836c0b3",
+    "reason": "CI-only temporary test constants"
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "line": 54,
+    "category": "credential_literal",
+    "line_sha256": "a7c4fdd97e793ed12a6f63bf698718d2e0c2d3bb1c140f2197fa6b15be074cbd",
+    "reason": "CI-only temporary test constants"
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "line": 69,
+    "category": "credential_literal",
+    "line_sha256": "5f46c52b6b7cffd4ffd7e738d066e8d5af4d5ab7647be43e3a3e1ddbd1819fbc",
+    "reason": "CI-only temporary test constants"
+  },
+  {
+    "path": "src/order_pipeline/storage.py",
+    "line": 316,
+    "category": "credential_literal",
+    "line_sha256": "28e8819b3117899b91c4560db7483824ab58fecaf5e784848ae5837d7f11df22",
+    "reason": "environment/config property reads, not literals"
+  },
+  {
+    "path": "src/order_pipeline/storage.py",
+    "line": 336,
+    "category": "credential_literal",
+    "line_sha256": "dc081a28f50863351c0f862f62b4880e72038770a269b8374b5ce4f0e6b05652",
+    "reason": "environment/config property reads, not literals"
+  }
+]

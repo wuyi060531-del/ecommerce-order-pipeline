@@ -1,0 +1,2 @@
+# 可选；默认 SQLite 运行无需安装。rsa 支持 MySQL 8 常见认证方式。
+PyMySQL[rsa]==1.1.2

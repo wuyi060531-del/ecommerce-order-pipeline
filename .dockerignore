@@ -1,0 +1,16 @@
+# 默认不把仓库内容发给构建器；只开放镜像运行需要的文件。
+**
+!Dockerfile
+!.dockerignore
+!requirements.txt
+!requirements-mysql.txt
+!src/
+!src/__init__.py
+!src/order_pipeline/
+!src/order_pipeline/**
+!sql/
+!sql/*.sql
+!scripts/
+!scripts/verify_mysql.py
+**/__pycache__/
+**/*.py[cod]

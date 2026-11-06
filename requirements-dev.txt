@@ -1,0 +1,4 @@
+# 开发与完整验收工具；正式运行不需要安装 Ruff/PyYAML。
+-r requirements.txt
+ruff==0.12.0
+PyYAML==6.0.2

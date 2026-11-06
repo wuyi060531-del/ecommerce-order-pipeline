@@ -1,0 +1,19 @@
+# 2026-11-06 macOS arm64 / Python 3.12 隔离环境实测解析。
+# 仅用于 Python 3.12 复现；其他版本不套用，不是跨平台 hash lock。
+# pip install -r requirements-dev.txt -c constraints-demo-py312.txt
+PyMySQL==1.1.2
+PyYAML==6.0.2
+Pygments==2.21.0
+cffi==2.1.1
+cryptography==50.0.2
+iniconfig==2.3.1
+numpy==2.5.4
+packaging==26.3
+pandas==2.2.3
+pluggy==1.7.0
+pycparser==3.12
+pytest==8.4.2
+python-dateutil==4.0.0
+pytz==2026.6
+ruff==0.12.0
+tzdata==2026.6

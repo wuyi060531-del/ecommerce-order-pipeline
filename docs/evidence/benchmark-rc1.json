@@ -1,0 +1,147 @@
+{
+  "label": "public-rc1",
+  "records": [
+    {
+      "rows": 1000,
+      "seed": 20261030,
+      "source_sha256": "1a0a1cd96f4b16c8d0db76ebfba14fa6eccd5c85eaaac1096923227fbda4d0a1",
+      "dataset_kind": "synthetic",
+      "backend": "sqlite",
+      "database_state": "new_empty_database",
+      "timings": {
+        "csv_read_seconds": 0.03252020804211497,
+        "clean_seconds": 0.0796071250224486,
+        "quality_seconds": 0.022495709010399878,
+        "report_seconds": 0.07946020795498043,
+        "database_load_seconds": 0.07192616700194776,
+        "sql_seconds": 0.0016366250347346067,
+        "total_seconds": 0.2889151250710711
+      },
+      "metrics": {
+        "raw_rows": 1000,
+        "accepted_orders": 840,
+        "quarantined_rows": 150,
+        "duplicate_rows": 10,
+        "anomalous_rows": 180,
+        "clean_rows": 820,
+        "warning_rows": 30,
+        "paid_orders": 443,
+        "sales_amount_cents": 10884600,
+        "missing_city_rows": 10,
+        "invalid_time_rows": 10
+      },
+      "load_statistics": {
+        "incoming": 840,
+        "written": 840,
+        "unchanged": 0,
+        "run_written": 1,
+        "issues_replaced": 1,
+        "issues_written": 180
+      },
+      "peak_memory_mib": 71.390625,
+      "profiled": false,
+      "peak_memory_method": "resource.RUSAGE_SELF.ru_maxrss; Darwin=bytes, Linux=KiB"
+    },
+    {
+      "rows": 10000,
+      "seed": 20261030,
+      "source_sha256": "99f04e02c542976c75519fb42a1d52a975875f61e4d515ec77c47cf559646e06",
+      "dataset_kind": "synthetic",
+      "backend": "sqlite",
+      "database_state": "new_empty_database",
+      "timings": {
+        "csv_read_seconds": 0.031144583015702665,
+        "clean_seconds": 0.12182262493297458,
+        "quality_seconds": 0.03465787507593632,
+        "report_seconds": 0.10830754193011671,
+        "database_load_seconds": 0.16066670801956207,
+        "sql_seconds": 0.00830708397552371,
+        "total_seconds": 0.4685899999458343
+      },
+      "metrics": {
+        "raw_rows": 10000,
+        "accepted_orders": 8400,
+        "quarantined_rows": 1500,
+        "duplicate_rows": 100,
+        "anomalous_rows": 1800,
+        "clean_rows": 8200,
+        "warning_rows": 300,
+        "paid_orders": 4304,
+        "sales_amount_cents": 105949730,
+        "missing_city_rows": 100,
+        "invalid_time_rows": 100
+      },
+      "load_statistics": {
+        "incoming": 8400,
+        "written": 8400,
+        "unchanged": 0,
+        "run_written": 1,
+        "issues_replaced": 1,
+        "issues_written": 1800
+      },
+      "peak_memory_mib": 106.03125,
+      "profiled": false,
+      "peak_memory_method": "resource.RUSAGE_SELF.ru_maxrss; Darwin=bytes, Linux=KiB"
+    },
+    {
+      "rows": 50000,
+      "seed": 20261030,
+      "source_sha256": "6f47a4c4e1ccfdc617efa092dddeffc4c06552a6224aa168fbf8a36bd95995df",
+      "dataset_kind": "synthetic",
+      "backend": "sqlite",
+      "database_state": "new_empty_database",
+      "timings": {
+        "csv_read_seconds": 0.24320733302738518,
+        "clean_seconds": 0.5545182490022853,
+        "quality_seconds": 0.20718983293045312,
+        "report_seconds": 0.42500699998345226,
+        "database_load_seconds": 0.7731106670107692,
+        "sql_seconds": 0.045756416977383196,
+        "total_seconds": 2.266845625010319
+      },
+      "metrics": {
+        "raw_rows": 50000,
+        "accepted_orders": 42000,
+        "quarantined_rows": 7500,
+        "duplicate_rows": 500,
+        "anomalous_rows": 9000,
+        "clean_rows": 41000,
+        "warning_rows": 1500,
+        "paid_orders": 21285,
+        "sales_amount_cents": 521756900,
+        "missing_city_rows": 500,
+        "invalid_time_rows": 500
+      },
+      "load_statistics": {
+        "incoming": 42000,
+        "written": 42000,
+        "unchanged": 0,
+        "run_written": 1,
+        "issues_replaced": 1,
+        "issues_written": 9000
+      },
+      "peak_memory_mib": 214.4375,
+      "profiled": false,
+      "peak_memory_method": "resource.RUSAGE_SELF.ru_maxrss; Darwin=bytes, Linux=KiB"
+    }
+  ],
+  "skipped": [],
+  "method": "single observation per size; serial fresh subprocess; fresh SQLite; includes exports, excludes interpreter startup",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 8,
+    "python": "3.12.14",
+    "pandas": "2.2.3",
+    "numpy": "2.5.4",
+    "memory_limit_context": "no OS-enforced memory cap; 512 MiB gate controls scale escalation"
+  },
+  "code_sha256": {
+    "src/order_pipeline/quality.py": "bba3088d6791c2cdaef0a56929961cca242dacfa20c709ee9a53e98924c87dda",
+    "src/order_pipeline/pipeline.py": "feff3ba4ba95e00035f5c5a9e88faed971e9df03bb5ccc4dce220153b4361164",
+    "src/order_pipeline/storage.py": "77bca408494ef98558c64e5938a947a1da69a7172e0167635dc0bc0b1e7cd82f",
+    "scripts/generate_orders.py": "1a41e683fe03f013d91d99bb7b6723b8a526be0c4183b517418542a0f6bcb452",
+    "scripts/benchmark.py": "2bd772f3fe5167281643adac43b848d625057956e2ff62f1cf46a1393d9f0f6b",
+    "src/order_pipeline/transforms.py": "3ee8ea47d49b848a4496f7f2f9d37a24015282e60d1ec96fd9908f67d86c4070"
+  }
+}

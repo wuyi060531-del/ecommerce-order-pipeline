@@ -1,0 +1,78 @@
+name: order-pipeline-v11
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?请设置临时测试库的root密码}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-order_pipeline_test}
+      MYSQL_USER: ${MYSQL_USER:-pipeline_test}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请设置临时测试用户密码}
+    ports:
+      - "127.0.0.1:${MYSQL_HOST_PORT:-33316}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    mem_limit: 1g
+    cpus: 1.0
+    command:
+      - --innodb-buffer-pool-size=128M
+      - --max-connections=30
+      - --performance-schema=OFF
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql --protocol=tcp -h127.0.0.1 -u$$MYSQL_USER -D$$MYSQL_DATABASE -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  etl:
+    build: .
+    image: order-pipeline:v1.1-local
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment: &mysql_client
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-order_pipeline_test}
+      MYSQL_USER: ${MYSQL_USER:-pipeline_test}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请设置临时测试用户密码}
+    command: ["run", "--backend", "mysql", "--input", "/data/raw/orders.csv", "--output", "/data/processed/mysql-v1"]
+    volumes:
+      - type: bind
+        source: ./data/raw
+        target: /data/raw
+        read_only: true
+      - pipeline_output:/data/processed
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    mem_limit: 1g
+    cpus: 1.0
+
+  mysql-test:
+    profiles: ["test"]
+    build: .
+    image: order-pipeline:v1.1-local
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      <<: *mysql_client
+      MYSQL_INTEGRATION: "1"
+    entrypoint: ["python", "-m", "scripts.verify_mysql"]
+    command: []
+    volumes:
+      - type: bind
+        source: ./data/raw
+        target: /app/data/raw
+        read_only: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    mem_limit: 1g
+    cpus: 1.0
+
+volumes:
+  mysql_data:
+  pipeline_output:

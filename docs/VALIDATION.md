@@ -1,45 +1,46 @@
-# 公开候选独立验收
+# 验证记录
 
-## 可信度修正的本地回归（2026-11-07）
+这里记录实际跑过的命令和结果。没有执行过的内容不会写成通过。结构化的数据在 [evidence/validation.json](evidence/validation.json)。
 
-本轮基线为已上传的 `19bfd3f`，只修改 CI、模式保护测试及文档；README、ETL、金额、SQL、数据和安全白名单未改，没有重建公开快照或开展新性能实验。
+## 当前状态
 
-- `python -m pytest tests/v1 -q --junitxml=.local/credibility-20261107/pytest.xml`：**129 passed in 6.38s**，0 failures / errors / skipped，1 条既有第三方 DeprecationWarning。
-- 两项模式保护测试使用各自合法参数，断言业务模式冲突提示且无参数解析错误：2 passed；在一次性测试副本中仅禁用模式保护后，2 项均按预期失败。正式实现未改。
-- `python -m scripts.demo_sqlite`：通过，30 = 26 + 3 + 1、paid 6600 分，三表 26 / 1 / 7；重跑、SQL、十份产物哈希及输入保护一致。
-- Ruff、`pip check`、YAML、只读 CI 权限、checkout 凭据配置和 11 个 run 块的 `bash -n` 检查通过。
-- CI 增加已有 `python -m scripts.check_release`，不替代推送前审阅。重封既有文件集合后独立执行发布检查；反例在临时副本中验证，不将额外文件纳入清单。
+最新提交 `09ca67c` 的 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42326079715) 四项任务全部成功：
 
-[已上传基线的最终 Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42239835051)四项成功；新增 CI 步骤须以修正提交自己的运行结果为准，不能沿用基线。MySQL／Docker 既有远端证据保留，本轮未在本机重跑这些服务。结构化记录见 [validation.json](evidence/validation.json)。
+| 任务 | 内容 |
+|---|---|
+| Python 3.10 / SQLite | Ruff、发布检查（`scripts.check_release`）、129 项测试、SQLite 演示 |
+| Python 3.12 / SQLite | 同上 |
+| MySQL 8.4 真实集成 | 建表、事务、幂等、服务重启后对账 |
+| Docker 构建与 SQLite 冒烟 | 镜像构建，只读输入的 SQLite 容器运行 |
 
+这次提交的改动：把 `scripts.check_release` 加进了 CI；修正了两个“模式保护”测试（原来传了不存在的参数，在参数解析阶段就退出了，没有真正测到保护逻辑）；统一了文档里的状态表述。
 
-## GitHub Private 上架实测（2026-11-06）
+本地回归（2026-11-07）：
 
-独立根提交 `84fc0fa` 已上传至所有者的 Private 仓库；远端 56 文件的 Git blob 哈希与本地逐一相等，无原学习仓库父历史。GitHub README HTML 渲染响应正常；未声称进行浏览器视觉检查。
+- `python -m pytest tests/v1 -q`：129 passed，没有失败、错误或跳过，1 条第三方 DeprecationWarning。
+- 两个模式保护测试现在用合法参数，断言能看到“另一种运行模式”的提示，且原产物字节不变。在临时副本里关掉保护逻辑后，这两项都会失败，说明测试确实有约束力。正式代码没有改。
+- `python -m scripts.demo_sqlite`：通过，30 = 26 + 3 + 1，paid 6600 分，三张表 26 / 1 / 7。重跑、SQL、十份产物哈希和输入保护都一致。
+- Ruff、`pip check`、YAML 解析、CI 只读权限、checkout 凭据配置、11 个 `run` 块的 `bash -n` 检查通过。
 
-[首轮 Actions 实际运行](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42222552697)四项全部成功：Python 3.10 为 129 passed（5.55 秒），Python 3.12 为 129 passed（5.25 秒、1 warning）；MySQL 8.4 建表、事务、幂等及服务重启对账通过；Docker 镜像构建与只读输入的 SQLite 容器运行通过。该远端结果补齐下述封存时的 MySQL／Docker／CI 缺口，不改变历史本地结果或性能数字。
+## 已知限制
 
-以下是首次封存时的本地独立验收记录。LICENSE 仍待决定，Private 不等于已开源；Public 需要另行批准。
+- Compose 服务和 Windows 没有验证过。
+- 本地 Docker 构建曾因 Docker Hub 的鉴权请求超时而失败，镜像构建是在 GitHub CI 里通过的。
+- 2026-10-31 在 MySQL 8.4.13 上有一次真实验收，但针对的是拆分前的代码和旧数据，见 [mysql-historical.json](evidence/mysql-historical.json)。现在的 MySQL 验证来自上面的 CI 任务。
+- 没有专业的熵扫描，也没有法律保证。
 
+## 首次封存时的记录（2026-11-06）
 
-2026-11-06；来源版本 `7f738f8`，公开目录 public-rc1。新建 Python 3.12.14 虚拟环境，安装 requirements-dev / requirements-mysql 并使用 3.12 约束成功，pip check 无冲突。没有复用原虚拟环境或数据库。
+来源版本 `7f738f8`，Python 3.12.14，全新虚拟环境，`pip check` 无冲突。
 
-## 实际运行
+- 129 passed，22.83 秒。原来属于教学工具的 39 项没有带过来，新增 4 项检查独立运行、来源和文件边界。
+- `scripts.create_demo_data --verify` 通过，样本可以逐字节重建；原规则对新样本与提取后的公开规则，质量指标一致。
+- CLI 缺文件、缺字段都退出 2，不产生成功产物。
+- 独立根提交 `84fc0fa` 上传后，远端 56 个文件的 Git blob 哈希与本地逐一相等，没有原仓库的父历史。首轮 [Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42222552697) 四项成功。
 
-- `.venv/bin/python -m pytest tests/v1 -q --junitxml=.local/pytest.xml`：**129 passed**，0 failures / errors / skipped，JUnit suite 22.83 秒。原教学工具的 39 项没有进入本目录；新增 4 项检验独立运行、生成来源与文件边界，不能沿用原 164 项。
-- 1 条第三方 DeprecationWarning：Pandas 2.2.3 与 NumPy 2.5.4 的 timedelta 通用单位转换。没有屏蔽 warning 或修改业务去消除它，当前行为测试通过。
-- `.venv/bin/python -m scripts.demo_sqlite`：0；真实 run 两次、analyze、report、check。30 = 26 + 3 + 1，paid 11 条 / 6600 分；orders / etl_runs / dq_issues = 26 / 1 / 7；十份产物哈希稳定，原输入不变。
-- `.venv/bin/python -m scripts.create_demo_data --verify`：0；新样本逐字节可重建。原规则对新样本与提取后的公开规则质量指标一致，未因换数据改变规则。
-- 真实 CLI 的缺文件与缺字段均退出 2，未生成成功产物；相应更多反例、SQL 精度、事务回滚、A/B/A、报告失败恢复由本目录测试覆盖。
-- Ruff（src/order_pipeline、scripts、tests/v1）、YAML 解析、workflow 所有 run 块 bash -n、真实 `docker compose config --quiet` 静态配置检查通过。
-- Docker 29.8.2 / OrbStack daemon 可用，已尝试 build；Docker Hub 匿名鉴权 token 请求超时，应用镜像未构建成功，未运行容器。不是无 Docker 环境，也不记为应用测试失败或容器通过。
-- 本目录 live MySQL、Compose 服务、远端 Actions 未运行。2026-10-31 MySQL 8.4.13 的[历史证据摘要](evidence/mysql-historical.json)仅针对拆分前代码与旧数据，不标成本快照实测。
+## 性能观测
 
-安装时沙箱 DNS 曾阻止下载，获准联网后成功；没有松动依赖或修改系统服务。完整结构化结果见 [validation.json](evidence/validation.json)。日志、JUnit、虚拟环境、数据库仅在本地运行区，不放进发布清单。
-
-## 本公开目录的 synthetic 性能观测
-
-Apple M1 / 8 GiB、macOS 26.6.2 arm64；Python 3.12.14、Pandas 2.2.3、NumPy 2.5.4、SQLite。种子 20261030，三档串行、新进程、新空库，各测一次，不含解释器启动，含导出；非 profiler 测量。
+环境：Apple M1 / 8 GiB、macOS 26.6.2、Python 3.12.14、Pandas 2.2.3、NumPy 2.5.4、SQLite。种子 20261030，三档依次运行，每档用新进程和新的空库，各测一次，含导出，不含解释器启动。
 
 | synthetic 输入行数 | 完整 ETL 秒数 | 进程峰值 MiB |
 | ---: | ---: | ---: |
@@ -47,10 +48,12 @@ Apple M1 / 8 GiB、macOS 26.6.2 arm64；Python 3.12.14、Pandas 2.2.3、NumPy 2.
 | 10,000 | 0.4686 | 106.03 |
 | 50,000 | 2.2668 | 214.44 |
 
-命令：`.venv/bin/python -m scripts.benchmark --sizes 1000 10000 50000 --label public-rc1 --output .local/benchmarks`。单档 120 秒；512 MiB 为升级门槛，非 OS 强制限额。峰值为 worker 的 resource.RUSAGE_SELF.ru_maxrss（Darwin bytes / Linux KiB，统一 MiB），不含 MySQL 服务内存。一次观测未控制缓存、温度或调度，不是生产吞吐、MySQL 性能或优化收益结论；没有本快照优化前后对照。原始聚合、各阶段、环境、输入及代码哈希见 [benchmark-rc1.json](evidence/benchmark-rc1.json)。
+```bash
+.venv/bin/python -m scripts.benchmark --sizes 1000 10000 50000 --label public-rc1 --output .local/benchmarks
+```
 
-## 发布范围
+单档超时 120 秒，512 MiB 是升级到下一档前的内存门槛，不是系统强制限额。峰值取自 worker 的 `resource.RUSAGE_SELF.ru_maxrss`，不含 MySQL 服务的内存。每档只测了一次，没有控制缓存、温度和调度，所以这些数字只说明这台机器上的大致量级，不是生产吞吐或 MySQL 性能，也没有优化前后的对比。详细数据见 [benchmark-rc1.json](evidence/benchmark-rc1.json)。
 
-安全复查对最终源码清单独立执行，常见密钥／token、私人路径、邮箱、手机号、证件号及带密码 URL 无未审阅命中。少量配置环境引用和测试假凭据以精确行 SHA 审阅；不是按文件整体忽略。`scripts.check_release` 检查完整文件集合、SHA 和所有本地 Markdown 链接；清单本身不自哈希，工作环境不随包发布。无专业熵扫描或法律保证。
+## 发布范围检查
 
-技术上达到可供所有者最终审阅的源码公开候选，无必须修复的源码运行阻塞。剩余所有者事项是许可证及数据范围、署名和明确公开批准；Docker 网络导致的容器验证缺口、远端 CI 及本快照 live MySQL 均须继续如实披露，不构成源码演示已验证的部分。
+对最终文件清单做了独立的安全检查，没有发现未审阅的密钥、token、私人路径、邮箱、手机号、证件号或带密码的 URL。少量环境变量引用和测试用的假凭据，是按精确行的 SHA 逐条审阅的，不是整文件忽略。`scripts.check_release` 会检查完整文件集合、哈希和所有本地 Markdown 链接。

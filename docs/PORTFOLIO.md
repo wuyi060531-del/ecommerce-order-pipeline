@@ -1,21 +1,13 @@
-# 项目介绍与本人复现要求
+# 项目说明与代码阅读指南
 
-仓库：[wuyi060531-del/ecommerce-order-pipeline](https://github.com/wuyi060531-del/ecommerce-order-pipeline)，已上传并保持 Private；暂不添加 LICENSE。
+仓库：[wuyi060531-del/ecommerce-order-pipeline](https://github.com/wuyi060531-del/ecommerce-order-pipeline)
 
-GitHub 简介：`Python/Pandas ETL with auditable data quality rules, exact money, idempotent SQLite/MySQL loading, SQL reconciliation, and reproducible synthetic demos.`
+一句话：Python/Pandas ETL，带可审计的数据质量规则、精确金额、幂等的 SQLite/MySQL 加载、SQL 对账，以及可重现的合成数据演示。
 
-## 可据实使用的项目经历候选
+这是一个单机、虚构数据的练习项目，没有企业生产经历，也没有真实业务数据。工程在 AI 辅助下完成，具体分工见 [PROVENANCE](PROVENANCE.md)。
 
-> 在 Codex 辅助下维护并验证 Python 电商订单批处理工程，覆盖 CSV 数据质量审计、异常隔离、Decimal / 整数分金额、SQLite / MySQL 事务加载及 SQL 对账。完成独立源码拆分和 synthetic 演示，验证重跑幂等、A/B/A 恢复与文件发布故障后的安全重试；测试数量引用本候选目录的实测结果。项目为单机虚构数据实验，无企业生产经历。
+## 想验证核心行为，可以从这三件事入手
 
-不能把 AI 主导工程写成“本人独立完成”。拆分前的历史 MySQL 与本工程 GitHub CI 结果应分别标注数据、提交及环境，见[验收](VALIDATION.md)；不将 synthetic 实验写成真实企业吞吐。未来本人亲自修改、复现和解释的部分可按真实贡献补充。
-
-## 必须亲自复现的三项核心能力
-
-一次只做一项，不预填完成或掌握记录。
-
-1. **从新 CSV 独立组织 ETL 与质量核对**：解释去重、隔离、修复和警告，用 5 行新数据写出数量等式并实现；源码 `quality.py` / `transforms.py`，行为参考 `tests/v1/test_quality.py`。必须解释副本、Series / DataFrame、NaT 和 Decimal 的作用。
-2. **亲自证明事务和幂等**：在临时 SQLite 完成插入、变化更新、未变零写入、A/B/A；写入第二笔时注入失败并证明整批回滚。源码 `storage.py`，参考 `tests/v1/test_storage.py` / `test_storage_v11.py`，不能只背“唯一键防重”。
-3. **独立 SQL 对账与失败定位**：用同一 paid 范围核对明细、城市、商品和数据库总额，解释本批与全库区别；故意使文件发布失败，定位数据库是否已提交并重跑恢复。源码 `pipeline.py` / `sql/analysis_mysql.sql`，参考 `tests/v1/test_pipeline.py` / `test_pipeline_v11.py`。
-
-测试通过只证明已覆盖行为；独立解释、换需求迁移和延迟记忆另行验证。
+1. **质量规则和去重**：用 5 行新数据写出“原始行 = 接收 + 隔离 + 重复副本”这个等式。代码在 `quality.py`、`transforms.py`，行为见 `tests/v1/test_quality.py`。
+2. **事务和幂等**：在临时 SQLite 里依次做插入、变化更新、没变化时零写入、A → B → A 恢复；写第二笔时注入失败，确认整批回滚。代码在 `storage.py`，行为见 `tests/v1/test_storage.py` 和 `test_storage_v11.py`。
+3. **SQL 对账和失败定位**：用同一个 paid 范围核对明细、城市、商品和数据库总额；让报告发布失败一次，看数据库是否已经提交，再重跑恢复。代码在 `pipeline.py`、`sql/analysis_mysql.sql`，行为见 `tests/v1/test_pipeline.py` 和 `test_pipeline_v11.py`。

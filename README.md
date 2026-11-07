@@ -1,12 +1,14 @@
 # E-Commerce Order Pipeline
 
-Python / Pandas 单机订单 ETL：检查 CSV、隔离异常、精确计算金额、事务入库，再以 SQL 核对和输出报告。包含 SQLite 与 MySQL 适配，适合展示批处理的正确性、审计和失败恢复。
+一个单机订单 ETL：读取 CSV，隔离有问题的行，用整数分计算金额，在一个事务里写入数据库，再用 SQL 对账并输出报告。支持 SQLite 和 MySQL。
 
-本目录是独立公开候选工程，不包含私人学习记录或原 Git 历史。工程与本轮拆分为 **Codex 辅助实现**，不宣称作者已独立掌握全部代码。许可证尚待所有者决定；当前未授予项目开源许可，见[发布决策](docs/RELEASE_DECISIONS.md)。
+它想说明的是批处理里的几件基本功：脏数据怎么处理、金额怎么不丢精度、失败了怎么回滚、重跑为什么不会产生重复数据。
 
-## 五分钟运行
+这个项目是在 AI（Codex）辅助下完成的，来源和与原学习仓库的区别见 [PROVENANCE](docs/PROVENANCE.md)。
 
-准备 Python 3.12，在项目根目录执行（macOS / Linux）：
+## 快速运行
+
+需要 Python 3.12，不需要 MySQL 或 Docker：
 
 ```bash
 python3.12 -m venv .venv
@@ -14,15 +16,17 @@ python3.12 -m venv .venv
 .venv/bin/python -m scripts.demo_sqlite
 ```
 
-无需 MySQL 或 Docker。每次新建独立 SQLite，运行完整 CLI、重跑、分析、报告重建及质量检查；核对十份产物哈希、SQL 金额、三表数量和输入保护。最后一行给出 `.local/demos/sqlite-*/run/report.md` 路径。
+脚本会建一个全新的 SQLite 库，跑完整流程（入库、重跑、分析、重建报告），并核对产物哈希、SQL 金额和三张表的行数。成功时最后一行是：
 
 ```text
 演示通过：30 = 26 + 3 + 1；paid 66.00 元；重跑、SQL、输入保护一致。
 ```
 
-[查看真实生成的报告](docs/sample-report.md)。本轮新建 demo-v1 虚构样本：30 行、26 接收、3 隔离、1 重复副本；11 条 paid 合计 **66.00 元**。这不是旧教学数据的 1223.70 元口径，规则未因换样本而改变。[数据来源与重建方法](data/README.md)。
+报告生成在 `.local/demos/sqlite-*/run/report.md`，一份样例见 [sample-report.md](docs/sample-report.md)。
 
-## 业务流程
+演示数据是 30 行虚构订单（生成方式见 [data/README.md](data/README.md)，字段定义见[数据字典](docs/ARCHITECTURE.md#八字段数据字典)）：26 行被接收，3 行因质量问题被隔离，1 行是重复副本，其中 11 笔 `paid` 订单合计 66.00 元。
+
+## 处理流程
 
 ```mermaid
 flowchart LR
@@ -38,13 +42,21 @@ flowchart LR
     H -->|发布失败| I[诊断后幂等重跑]
 ```
 
-- 完全重复保留首条；同批相同订单编号但内容冲突全部隔离。非法数量、价格和状态隔离；空城市补「未知」，无效日期留空且保留订单金额。
-- 单价使用 Decimal，数据库金额存整数分（MySQL BIGINT）；只统计 `paid`。Pandas 本批汇总与 SQL 全库汇总分别输出，不能在多批次后混为一谈。
-- 唯一键 `order_id`；比较库中当前业务字段，未变值不写入，支持 A → B → A 恢复。订单、批次、问题记录同事务；数据库提交与文件发布分别处理，通过幂等重试恢复。
+**质量规则**
+- 完全相同的重复行保留第一条；订单号相同但内容冲突的，整组隔离。
+- 数量、单价、状态不合法的行隔离。城市为空补“未知”；日期无效则留空，订单金额仍然计入。
 
-[架构与三表设计](docs/ARCHITECTURE.md) · [运行、MySQL 与 Docker](docs/RUNNING.md)
+**金额**
+- 单价用 `Decimal` 计算，数据库里存整数分（MySQL 用 BIGINT），只统计 `paid` 订单。
+- 每次运行输出两个口径：Pandas 的本批汇总，和 SQL 的全库汇总。多批次入库后两者会不同，这是预期行为。
 
-## 验证与性能
+**事务与重跑**
+- 唯一键是 `order_id`。重跑时比较库里的当前字段，没变的不写，所以 A → B → A 的数据变化也能恢复。
+- 订单、批次、质量问题三张表在同一事务里提交。数据库提交和报告文件发布是两个步骤，发布失败后重跑即可补齐。
+
+更多细节：[架构与三表设计](docs/ARCHITECTURE.md) · [运行、MySQL 与 Docker](docs/RUNNING.md)
+
+## 测试
 
 ```bash
 .venv/bin/python -m pip install -r requirements-dev.txt -c constraints-demo-py312.txt
@@ -53,23 +65,26 @@ flowchart LR
 .venv/bin/python -m scripts.check_release
 ```
 
-本快照的**实际测试数量、环境、命令和限制**见[独立验收证据](docs/VALIDATION.md)，不沿用原仓库的 164 项声明。覆盖质量边界、输入保护、真实 SQLite 事务／SQL、重跑、A/B/A、失败恢复、CLI 和发布文件完整性。MySQL 8.4.13 于 2026-10-31 在拆分前工程有历史真实验收；本地 Docker 构建曾因 Docker Hub 鉴权请求超时未完成；随后本快照在 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42222552697) 实际通过 Python 3.10/3.12（各 129 项）、MySQL 8.4 事务／幂等／重启对账，以及 Docker 构建和 SQLite 容器冒烟。
+当前共 129 项测试，覆盖质量规则边界、输入保护、SQLite 事务和 SQL、重跑与 A/B/A、失败恢复、CLI 和发布文件完整性。[GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions) 在 Python 3.10 和 3.12 上各通过 129 项，另有 MySQL 8.4 的事务、幂等和重启对账，以及 Docker 构建与冒烟测试。具体环境、命令和已知限制见 [VALIDATION](docs/VALIDATION.md)。
 
-性能工具只接受带 synthetic 标记且哈希匹配的新数据；种子固定、每档新进程与新 SQLite、1000/10000/50000 行串行运行，单档超时 120 秒，升至 50000 行前检查峰值内存。512 MiB 为升级门槛，不是 OS 强制限额。
+性能脚本只接受带 `synthetic` 标记且哈希匹配的数据，按 1000 / 10000 / 50000 行逐档运行，每档用独立进程和新的 SQLite：
 
 ```bash
 .venv/bin/python -m scripts.benchmark --sizes 1000 10000 50000 --label first-run --output .local/benchmarks
 ```
 
-标签不可复用。阶段耗时与进程峰值的单位、环境和单次观测限制见[验收记录](docs/VALIDATION.md)。不将合成单机实验称为企业吞吐、线上收益或集群经验。
+这些都是单机合成数据上的实验，不代表真实业务的吞吐。
 
-## 范围与归因
+## 适用范围
 
-一行代表单商品订单；单机、单写者、最后成功加载生效；没有事件时间水位、并发写入或分布式事务。没有企业真实数据、线上用户或生产部署证据。本地实测为 Python 3.12/macOS；Linux CI 已验证 Python 3.10/3.12，Windows 未验证。
+- 一行是一个单商品订单；单机、单写者，以最后一次成功加载为准。
+- 不处理事件时间水位、并发写入或分布式事务。
+- 没有真实企业数据，也没有线上部署。本地环境是 Python 3.12 / macOS，CI 验证了 Linux 上的 Python 3.10 和 3.12，没有测过 Windows。
 
-- [源码来源及与私有工程的区别](docs/PROVENANCE.md)
-- [第三方依赖许可](docs/THIRD_PARTY.md)
-- [发布前决策](docs/RELEASE_DECISIONS.md)、[项目经历与本人复现要求](docs/PORTFOLIO.md)
-- [逐文件来源映射](docs/SOURCE_MAP.json)、[公开文件 SHA-256 清单](SHA256SUMS.json)
+## 相关文档
 
-已上传至所有者的 [GitHub Private 仓库](https://github.com/wuyi060531-del/ecommerce-order-pipeline)，尚未公开，暂不添加 LICENSE。后续改为 Public 须另经所有者确认。
+[来源与归因](docs/PROVENANCE.md) · [第三方依赖许可](docs/THIRD_PARTY.md) · [项目经历与复现要求](docs/PORTFOLIO.md) · [发布决策](docs/RELEASE_DECISIONS.md) · [逐文件来源](docs/SOURCE_MAP.json) · [文件哈希清单](SHA256SUMS.json)
+
+## 许可证
+
+尚未选择许可证，在选定之前不授予任何使用、修改或分发权限。

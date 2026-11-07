@@ -276,9 +276,13 @@ def test_other_workflow_cannot_erase_an_existing_etl_batch_output(tmp_path, comm
     database = tmp_path / "orders.sqlite3"
     run_pipeline(source, output, database_path=database)
     before = {path.name: path.read_bytes() for path in output.iterdir()}
-    result = cli(command, "--input", source, "--output", output, "--database", database)
+    arguments = ("--input", source) if command == "check" else ("--database", database)
+    result = cli(command, *arguments, "--output", output)
     assert result.returncode == 2
-    assert "Traceback" not in result.stdout + result.stderr
+    feedback = result.stdout + result.stderr
+    assert "另一种运行模式" in feedback
+    assert "unrecognized arguments" not in feedback
+    assert "Traceback" not in feedback
     assert {path.name: path.read_bytes() for path in output.iterdir()} == before
 
 

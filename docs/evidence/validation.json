@@ -89,5 +89,52 @@
     "browser_visual_check": false,
     "visibility": "private",
     "license": "not added"
+  },
+  "record_scope": "Top-level fields retain the initial public-rc1 local evidence. Later local corrections and GitHub acceptance are recorded in separate sections below.",
+  "latest_verified_remote_ci": {
+    "head": "19bfd3f9f81aeeb4f7cee20a18250e1fa44b26f3",
+    "url": "https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42239835051",
+    "conclusion": "success",
+    "scope": "Previously uploaded Python 3.10/3.12, MySQL 8.4 and Docker jobs; not a new run of the credibility corrections."
+  },
+  "credibility_corrections_20261107": {
+    "baseline": "19bfd3f9f81aeeb4f7cee20a18250e1fa44b26f3",
+    "business_logic_changed": false,
+    "readme_changed": false,
+    "pytest": {
+      "command": "python -m pytest tests/v1 -q --junitxml=.local/credibility-20261107/pytest.xml",
+      "tests": 129,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 6.373,
+      "warnings": 1
+    },
+    "focused_mode_tests": {
+      "passed": 2,
+      "seconds": 7.47
+    },
+    "negative_control": {
+      "mode_guard_disabled_in_temp_only": true,
+      "expected_failures": 2,
+      "summary": "2 failed in 1.11s"
+    },
+    "sqlite_demo": {
+      "counts": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7
+      },
+      "sales_amount_cents": 6600,
+      "rerun_artifacts_equal": true,
+      "input_unchanged": true
+    },
+    "static": {
+      "ruff": "passed",
+      "pip_check": "passed",
+      "yaml_permissions_and_11_shell_blocks": "passed"
+    },
+    "ci_release_gate": "python -m scripts.check_release; remote execution must be verified for the correction commit",
+    "license": "not added"
   }
 }

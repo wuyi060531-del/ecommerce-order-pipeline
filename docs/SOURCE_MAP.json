@@ -89,7 +89,7 @@
     {
       "path": "tests/v1/test_pipeline.py",
       "source_sha256": "8be8f0c0e0b3b7149958567fc52896dbe5d3b148a9c809adf5b240aa22b54b89",
-      "public_sha256": "aa8763b99d458e225739ef21af6d2634f07d724e4732036fbc1086f0a578db89",
+      "public_sha256": "11375f473cf09db3584caa536ed812cb78eb63d9b6eb81280a9c69ee1c261b83",
       "adapted": true
     },
     {
@@ -185,8 +185,8 @@
     {
       "path": ".github/workflows/ci.yml",
       "source_sha256": "a1e344a496348634cc6757521ef4f370fb9a05c0d2c759d5d5604a53b1c3b4d9",
-      "public_sha256": "a1e344a496348634cc6757521ef4f370fb9a05c0d2c759d5d5604a53b1c3b4d9",
-      "adapted": false
+      "public_sha256": "62bda918b241dc61223b6d5ea895794c0ac58f5a1182e34318d4617711735ded",
+      "adapted": true
     }
   ],
   "generated_asset_paths": [

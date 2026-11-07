@@ -39,11 +39,11 @@ export MYSQL_PASSWORD
 unset MYSQL_PASSWORD
 ```
 
-在 read 后输入密码回车。程序只读环境变量，不自动加载 `.env`；模板是 `.env.example`。TLS 可用 MYSQL_SSL_CA。验证脚本要求 MYSQL_INTEGRATION=1、数据库名以 `_test` / `_smoke` 结尾、三张业务表为空且独占。它会写测试数据并按自己精确的键清理，不能指向业务库。本快照仅保留可执行脚本，未重新跑 live MySQL。
+在 read 后输入密码回车。程序只读环境变量，不自动加载 `.env`；模板是 `.env.example`。TLS 可用 MYSQL_SSL_CA。验证脚本要求 MYSQL_INTEGRATION=1、数据库名以 `_test` / `_smoke` 结尾、三张业务表为空且独占。它会写测试数据并按自己精确的键清理，不能指向业务库。已上传的 `19bfd3f` 在 GitHub CI 实际通过 MySQL 8.4 集成及正常重启对账；这不等于本轮本机重跑，详见[验收](VALIDATION.md)。
 
 ## Docker 与 CI
 
-已准备非 root 进程、只读原始数据挂载和独立输出 volume。Docker daemon 可用，本轮 build 因 Docker Hub 匿名 token 请求超时失败，未成功构建或运行应用容器；以下是网络恢复后的复现命令：
+已准备非 root 进程、只读原始数据挂载和独立输出 volume。首次封存时，本机 build 因 Docker Hub 匿名 token 请求超时未完成；随后已上传版本在 GitHub CI 实际通过 Docker 构建及 SQLite 容器运行。历史本地失败保留，以下是本地复现命令：
 
 ```bash
 docker build -t ecommerce-order-pipeline:local .
@@ -53,7 +53,9 @@ docker run --rm --memory=1g --read-only --tmpfs /tmp:size=128m \
   ecommerce-order-pipeline:local
 ```
 
-Compose 使用隔离 MySQL 与临时密码环境变量，不要复用真实凭据。CI 提供 Python 3.10 / 3.12 正式测试和演示、MySQL 8.4 service 验收及正常重启对比、Docker SQLite 冒烟；它们不会发布镜像或部署。当前无远程 CI 运行结果。
+Compose 使用隔离 MySQL 与临时密码环境变量，不要复用真实凭据。CI 提供 Python 3.10 / 3.12 正式测试和演示、MySQL 8.4 service 验收及正常重启对比、Docker SQLite 冒烟；它们不会发布镜像或部署。已上传 `19bfd3f` 的[四项远端任务](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42239835051)全部通过，不能据此宣称 Compose 服务或 Windows 已验证。
+
+本轮修正将 `python -m scripts.check_release` 接入 CI，检查完整发布清单、敏感规则与内部链接；这层检查不替代推送前人工审阅。新增步骤的远端验收须查看修正提交对应的 Actions，不沿用 `19bfd3f` 的通过结果。
 
 ## 发布清单
 

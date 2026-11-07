@@ -1,5 +1,18 @@
 # 公开候选独立验收
 
+## 可信度修正的本地回归（2026-11-07）
+
+本轮基线为已上传的 `19bfd3f`，只修改 CI、模式保护测试及文档；README、ETL、金额、SQL、数据和安全白名单未改，没有重建公开快照或开展新性能实验。
+
+- `python -m pytest tests/v1 -q --junitxml=.local/credibility-20261107/pytest.xml`：**129 passed in 6.38s**，0 failures / errors / skipped，1 条既有第三方 DeprecationWarning。
+- 两项模式保护测试使用各自合法参数，断言业务模式冲突提示且无参数解析错误：2 passed；在一次性测试副本中仅禁用模式保护后，2 项均按预期失败。正式实现未改。
+- `python -m scripts.demo_sqlite`：通过，30 = 26 + 3 + 1、paid 6600 分，三表 26 / 1 / 7；重跑、SQL、十份产物哈希及输入保护一致。
+- Ruff、`pip check`、YAML、只读 CI 权限、checkout 凭据配置和 11 个 run 块的 `bash -n` 检查通过。
+- CI 增加已有 `python -m scripts.check_release`，不替代推送前审阅。重封既有文件集合后独立执行发布检查；反例在临时副本中验证，不将额外文件纳入清单。
+
+[已上传基线的最终 Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42239835051)四项成功；新增 CI 步骤须以修正提交自己的运行结果为准，不能沿用基线。MySQL／Docker 既有远端证据保留，本轮未在本机重跑这些服务。结构化记录见 [validation.json](evidence/validation.json)。
+
+
 ## GitHub Private 上架实测（2026-11-06）
 
 独立根提交 `84fc0fa` 已上传至所有者的 Private 仓库；远端 56 文件的 Git blob 哈希与本地逐一相等，无原学习仓库父历史。GitHub README HTML 渲染响应正常；未声称进行浏览器视觉检查。

@@ -1,21 +1,13 @@
 # 发布前待决定事项
 
-目前仓库是 Private，还没有 LICENSE，也没有转为 Public。
+许可证已选定为 **MIT**，全文见 [LICENSE](../LICENSE)，版权人 `wuyi060531-del`，年份 2026。选择理由：这是实习作品和可复现的示例，MIT 文本短，允许别人学习和复用，只要求保留版权声明。曾比较过 Apache-2.0（专利授权更明确，但要附 NOTICE，义务更多）和不授权（这样不能说“已开源”）。
 
-## 许可证
+MIT 只覆盖本仓库自己的代码、合成样本、生成器和文档，不覆盖第三方依赖，它们见[许可核对](THIRD_PARTY.md)。
 
-首选 **MIT**。这是一个实习作品和可复现的示例，MIT 文本简短，允许别人学习和复用，只要求保留版权声明。
+## 公开前确认
 
-备选 Apache-2.0：对贡献者的专利授权更明确，但需要附带变更说明和 NOTICE，义务更多。也可以暂不授予任何许可，这种情况不能说“已开源”。
-
-参考：[MIT](https://choosealicense.com/licenses/mit/) · [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) · [不选许可意味着什么](https://choosealicense.com/no-permission/)
-
-## 转为 Public 前要确认
-
-- 公开署名和 GitHub noreply 邮箱。
-- demo-v1 样本、生成器和报告是否采用与代码相同的许可证。
-- 最终的公开文件清单。
-- 同步修改 README 和相关文档中“尚未公开”的表述。
+- 仓库在公开前保持 Private；公开需要作者最后一次明确同意。
+- 合并提交里的作者邮箱是否可以接受公开，或改用 GitHub noreply 邮箱，由作者决定。
 
 ## 已处理
 

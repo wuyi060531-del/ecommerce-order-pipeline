@@ -10,6 +10,7 @@ import io
 import json
 import logging
 from pathlib import Path
+import re
 from time import perf_counter
 
 import pandas as pd
@@ -24,6 +25,10 @@ ISSUE_COLUMNS = ("source_row", "order_id", "rule", "severity", "action", "messag
 RULE_VERSION = "v1.0.0"
 MAX_PRICE = Decimal("9999999999.99")
 MAX_AMOUNT_CENTS = 9_000_000_000_000_000
+# 与 DataGuard 同一口径：只接受半角 0-9，可带 +/- 号和小数部分。
+# 刻意不用 \d（它会匹配全角数字），也不接受下划线、科学计数法、".5"、"5."。
+NUMBER_TEXT = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?")
+NUMBER_HINT = "仅限半角数字 0-9，不接受下划线、全角数字和科学计数法"
 LOGGER = logging.getLogger(__name__)
 
 
@@ -73,6 +78,9 @@ def read_csv(path: Path, encoding: str = "utf-8-sig") -> tuple[pd.DataFrame, str
 
 
 def _number(value: str) -> Decimal | None:
+    # Decimal() 会接受下划线和全角数字，并悄悄解释成别的数，所以先用 ASCII 正则把关。
+    if not NUMBER_TEXT.fullmatch(value):
+        return None
     try:
         result = Decimal(value)
         return result if result.is_finite() else None
@@ -136,11 +144,13 @@ def inspect_csv(path: Path, encoding: str = "utf-8-sig", timings: dict[str, floa
             reject("conflicting_order_id", "同一批次订单编号相同但记录不同；全部隔离，不猜测版本")
         quantity = _number(row["quantity"])
         if quantity is None or not (0 < quantity <= 2_147_483_647) or quantity != quantity.to_integral_value():
-            reject("invalid_quantity", "quantity 必须是 1～2147483647 的整数")
+            reject("invalid_quantity", f"quantity 必须是 1～2147483647 的整数（{NUMBER_HINT}）")
             quantity = None
         price = _number(row["unit_price"])
-        if price is None or not (0 <= price <= MAX_PRICE) or price != price.quantize(Decimal("0.01")):
-            reject("invalid_price", "unit_price 必须是非负有限金额，最多两位小数且不超过 9999999999.99")
+        # is_signed() 同时挡住负零：-0 满足 0 <= price，却会把 "-0.00" 写进清洗结果。
+        if (price is None or price.is_signed() or not (0 <= price <= MAX_PRICE)
+                or price != price.quantize(Decimal("0.01"))):
+            reject("invalid_price", f"unit_price 必须是非负有限金额，最多两位小数且不超过 9999999999.99（{NUMBER_HINT}）")
             price = None
         if quantity is not None and price is not None:
             amount = quantity * price

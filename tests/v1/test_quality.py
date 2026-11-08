@@ -97,6 +97,11 @@ def test_normalization_retains_identifiers_and_uses_decimal_money(tmp_path):
     ("unit_price", "NaN"), ("unit_price", "Infinity"),
     ("unit_price", "1.001"), ("unit_price", "10000000000.00"),
     ("status", "refunded"), ("status", ""),
+    # Decimal() 本身接受下列写法并改写成别的数，必须在解析前拒绝（Issue #3）。
+    ("quantity", "1_0"), ("quantity", "１２"), ("quantity", "1e2"),
+    ("unit_price", "1_0.50"), ("unit_price", "３.５０"), ("unit_price", "1e1"),
+    ("unit_price", ".5"), ("unit_price", "5."),
+    ("unit_price", "-0"), ("unit_price", "-0.00"),
 ])
 def test_invalid_business_values_are_quarantined_with_original_evidence(tmp_path, field, value):
     path = write_orders(tmp_path, [make_row(**{field: value})])
@@ -124,6 +129,47 @@ def test_zero_price_is_valid_but_amount_overflow_is_not(tmp_path):
     assert result.orders.order_amount.iloc[0] == Decimal("0")
     assert result.metrics["quarantined_rows"] == 1
     assert "overflow" in set(result.issues.order_id)
+
+
+@pytest.mark.parametrize("quantity,price,expected_quantity,expected_price", [
+    ("10", "2.50", 10, Decimal("2.50")),
+    ("+3", "+5.00", 3, Decimal("5.00")),
+    ("007", "007.5", 7, Decimal("7.50")),
+    ("1", "0", 1, Decimal("0.00")),
+    ("1", "0.00", 1, Decimal("0.00")),
+])
+def test_conventional_ascii_numbers_remain_valid(tmp_path, quantity, price, expected_quantity, expected_price):
+    result = inspect_csv(write_orders(tmp_path, [make_row(quantity=quantity, unit_price=price)]))
+    assert result.metrics["accepted_orders"] == 1
+    assert result.metrics["quarantined_rows"] == 0
+    assert result.issues.empty
+    order = result.orders.iloc[0]
+    assert order.quantity == expected_quantity
+    assert order.unit_price == expected_price
+
+
+def test_lookalike_numbers_are_quarantined_beside_valid_rows_without_leaking(tmp_path):
+    path = write_orders(tmp_path, [
+        make_row(order_id="ok-1"),
+        make_row(order_id="underscore", quantity="1_0", unit_price="1_0.50"),
+        make_row(order_id="fullwidth", quantity="１２", unit_price="３.５０"),
+        make_row(order_id="negzero", unit_price="-0.00"),
+        make_row(order_id="ok-2", quantity="3", unit_price="4.00"),
+    ])
+    result = inspect_csv(path)
+    assert result.orders.order_id.tolist() == ["ok-1", "ok-2"]
+    assert result.metrics["raw_rows"] == 5
+    assert result.metrics["accepted_orders"] == 2
+    assert result.metrics["quarantined_rows"] == 3
+    assert result.metrics["sales_amount_cents"] == 2 * 1250 + 3 * 400
+    assert not result.orders.unit_price.astype(str).str.startswith("-").any()
+    evidence = {row.order_id: json.loads(row.raw_record) for row in result.issues.itertuples()}
+    assert evidence["underscore"]["quantity"] == "1_0"
+    assert evidence["underscore"]["unit_price"] == "1_0.50"
+    assert evidence["fullwidth"]["quantity"] == "１２"
+    assert evidence["fullwidth"]["unit_price"] == "３.５０"
+    assert evidence["negzero"]["unit_price"] == "-0.00"
+    assert set(result.issues.rule) == {"invalid_quantity", "invalid_price"}
 
 
 def test_one_bad_row_keeps_all_reasons_without_overcounting_rows(tmp_path):

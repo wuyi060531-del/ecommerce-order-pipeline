@@ -45,6 +45,8 @@ flowchart LR
 **质量规则**
 - 完全相同的重复行保留第一条；订单号相同但内容冲突的，整组隔离。
 - 数量、单价、状态不合法的行隔离。城市为空补“未知”；日期无效则留空，订单金额仍然计入。
+- 数量和单价只接受半角数字 0-9，可带 `+`/`-` 号和小数点。下划线（`1_0`）、全角数字（`１２`）、科学计数法（`1e2`）、`.5`、`5.` 和负零（`-0`）一律隔离并保留原始值，不会被悄悄解释成别的数。
+- 质量报告里的 `source_row` 是记录序号（表头算第 1 条，空行不计），不是文件的物理行号；含引号换行的记录或空行会让两者不一致。
 
 **金额**
 - 单价用 `Decimal` 计算，数据库里存整数分（MySQL 用 BIGINT），只统计 `paid` 订单。
@@ -65,7 +67,7 @@ flowchart LR
 .venv/bin/python -m scripts.check_release
 ```
 
-当前共 129 项测试，覆盖质量规则边界、输入保护、SQLite 事务和 SQL、重跑与 A/B/A、失败恢复、CLI 和发布文件完整性。[GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions) 在 Python 3.10 和 3.12 上各通过 129 项，另有 MySQL 8.4 的事务、幂等和重启对账，以及 Docker 构建与冒烟测试。具体环境、命令和已知限制见 [VALIDATION](docs/VALIDATION.md)。
+当前共 145 项测试，覆盖质量规则边界、输入保护、SQLite 事务和 SQL、重跑与 A/B/A、失败恢复、CLI 和发布文件完整性。[GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions) 在 Python 3.10 和 3.12 上各通过 145 项，另有 MySQL 8.4 的事务、幂等和重启对账，以及 Docker 构建与冒烟测试。具体环境、命令和已知限制见 [VALIDATION](docs/VALIDATION.md)。
 
 性能脚本只接受带 `synthetic` 标记且哈希匹配的数据，按 1000 / 10000 / 50000 行逐档运行，每档用独立进程和新的 SQLite：
 

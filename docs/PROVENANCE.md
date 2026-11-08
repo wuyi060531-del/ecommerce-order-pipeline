@@ -12,7 +12,7 @@
 
 ## 与原工程的差异
 
-- 保留了原工程的 7 个测试文件。`test_learning_isolation.py` 和 `test_challenge_workflow.py` 是教学工具的自检，共 39 项，没有复制过来，也没有用 skip 凑通过。原来的 164 项中剩余 125 项作为回归基础，最终数量以[实际运行结果](VALIDATION.md)为准（当前 129 项）。
+- 保留了原工程的 7 个测试文件。`test_learning_isolation.py` 和 `test_challenge_workflow.py` 是教学工具的自检，共 39 项，没有复制过来，也没有用 skip 凑通过。原来的 164 项中剩余 125 项作为回归基础，最终数量以[实际运行结果](VALIDATION.md)为准（当前 145 项）。
 - 样本相关的测试只改了新的 synthetic ID、商品汇总和 6600 分这个预期值，数量、输入保护、异常、事务、幂等、SQL 和失败恢复的断言都保留。
 - Dockerfile 和构建上下文去掉了课程文件，对应的静态断言改为不允许出现任何 Day 文件。
 - 原来的 CSV 没有复制。新样本和生成方法见[数据说明](../data/README.md)。

@@ -1,5 +1,7 @@
 # E-Commerce Order Pipeline
 
+> Small batch ETL in Python: quarantines bad CSV rows with an audit trail, computes money in integer cents, loads in one transaction (SQLite / MySQL), and reconciles with SQL. Reruns do not create duplicates. Synthetic data only.
+
 一个单机订单 ETL：读取 CSV，隔离有问题的行，用整数分计算金额，在一个事务里写入数据库，再用 SQL 对账并输出报告。支持 SQLite 和 MySQL。
 
 它想说明的是批处理里的几件基本功：脏数据怎么处理、金额怎么不丢精度、失败了怎么回滚、重跑为什么不会产生重复数据。
@@ -23,6 +25,27 @@ python3.12 -m venv .venv
 ```
 
 报告生成在 `.local/demos/sqlite-*/run/report.md`，一份样例见 [sample-report.md](docs/sample-report.md)。
+
+### 真实运行输出（节选）
+
+下面是在干净环境里运行上面命令得到的日志，只去掉了时间戳和本机路径。同一份输入第二次加载时，26 行全部“未变化”、写入 0 行，这就是幂等重跑：
+
+```text
+读取 orders.csv：30 条记录，8 个字段
+质量结果：接收 26，隔离 3，重复副本 1，异常原始行 7
+SQLite 已提交批次：接收26，写入26，未变化0        ← 第一次加载
+SQLite 已提交批次：接收26，写入0，未变化26        ← 重跑同一批
+演示通过：30 = 26 + 3 + 1；paid 66.00 元；重跑、SQL、输入保护一致。
+```
+
+隔离和丢弃的行都留有审计记录（`quality_issues.csv`，含源行号、原始字段、规则、动作和原因）。三类典型结果：
+
+| 输入问题 | 规则 | 动作 | 是否入库 |
+|---|---|---|---|
+| `quantity` 为 `0` 或 `-1`（SYN027、SYN029） | `invalid_quantity` | 隔离 | 否 |
+| `unit_price` 为空（SYN028） | `invalid_price` | 隔离 | 否 |
+| 完全相同的重复行（SYN013） | `exact_duplicate` | 丢弃多余副本 | 否，只保留第一条 |
+| 城市为空（SYN010）、日期 `2027-02-30`（SYN011） | `missing_city` / `invalid_time` | 补“未知” / 日期留空 | 是，金额照常计入 |
 
 演示数据是 30 行虚构订单（生成方式见 [data/README.md](data/README.md)，字段定义见[数据字典](docs/ARCHITECTURE.md#八字段数据字典)）：26 行被接收，3 行因质量问题被隔离，1 行是重复副本，其中 11 笔 `paid` 订单合计 66.00 元。
 

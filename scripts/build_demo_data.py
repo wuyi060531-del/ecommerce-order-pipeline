@@ -359,13 +359,13 @@ def _static(data: dict) -> str:
     for row in data["rows"]:
         if row["issues"]:
             rules = "、".join(f"{i['rule']}（{i['action']}）" for i in row["issues"])
-            out.append(f"<tr><td>{row['record']}</td><td>{e(row['order_id'])}</td>"
-                       f"<td>{outcome[row['outcome']]}</td><td>{e(rules)}</td></tr>")
+            out.append(f"<tr><td class=\"nw\">{row['record']}</td><td class=\"nw\">{e(row['order_id'])}</td>"
+                       f"<td class=\"nw\">{outcome[row['outcome']]}</td><td>{e(rules)}</td></tr>")
     out.append("</tbody></table><h3>SQL 对账</h3><table><thead><tr><th>项目</th><th>SQL</th><th>对照值</th>"
                "<th>结果</th></tr></thead><tbody>")
     for c in data["reconciliation"]["checks"]:
-        out.append(f"<tr><td>{e(c['label'])}</td><td>{c['sql']}</td><td>{c['other']}（{e(c['other_label'])}）</td>"
-                   f"<td>{'一致' if c['match'] else '不一致'}</td></tr>")
+        out.append(f"<tr><td>{e(c['label'])}</td><td class=\"nw\">{c['sql']}</td><td>{c['other']}（{e(c['other_label'])}）</td>"
+                   f"<td class=\"nw\">{'一致' if c['match'] else '不一致'}</td></tr>")
     s = data["scenarios"]
     out.append("</tbody></table><h3>事务失败与重跑</h3><ul>")
     rerun, fail, rec = s["rerun"], s["failure"], s["recovery"]

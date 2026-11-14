@@ -99,7 +99,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .table-wrap.tall { max-height: 560px; overflow: auto; }
 table.grid { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .grid th, .grid td { padding: 9px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
-.grid thead th { position: sticky; top: 0; background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: .8rem; letter-spacing: .03em; }
+.grid thead th { white-space: nowrap; position: sticky; top: 0; background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: .8rem; letter-spacing: .03em; }
 .grid tbody tr:last-child td, .grid tbody tr:last-child th { border-bottom: 0; }
 .grid td.num-cell, .grid th.num-cell { text-align: right; font-family: var(--mono); }
 .grid td.mono, .grid th.mono { font-family: var(--mono); font-size: .86rem; }
@@ -204,7 +204,9 @@ pre { margin: 0 0 12px; padding: 14px 16px; overflow-x: auto; background: #070b1
 /* Static fallback and footer */
 #static-summary { display: none; }
 #static-summary table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-#static-summary th, #static-summary td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+#static-summary th, #static-summary td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; overflow-wrap: break-word; }
+#static-summary .nw { white-space: nowrap; }
+#static-summary tbody th { width: 40%; }
 .site-footer { padding-block: 32px 56px; border-top: 1px solid var(--border); color: var(--muted); font-size: .9rem; }
 .site-footer p { margin: 0 0 8px; overflow-wrap: anywhere; }
 

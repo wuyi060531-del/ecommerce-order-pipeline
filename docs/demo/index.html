@@ -1,0 +1,1430 @@
+<!doctype html>
+<title>placeholder</title>
+<!-- build:data -->
+<script type="application/json" id="demo-data">
+{
+  "schema": 1,
+  "meta": {
+    "app_version": "1.1.0",
+    "rule_version": "v1.0.0",
+    "backend": "sqlite",
+    "source_file": "data/raw/orders.csv",
+    "source_sha256": "378d5ea6bd1e976e442d7f361ec89a37a566d8d6ae0661fb1588d5c2fb18caaf",
+    "run_id": "ccd5a9f08c96865c5017f9811f53b435498037c7bafa494376f07f9040cefef9",
+    "synthetic": true,
+    "generator": "scripts/build_demo_data.py"
+  },
+  "metrics": {
+    "raw_rows": 30,
+    "accepted_orders": 26,
+    "quarantined_rows": 3,
+    "duplicate_rows": 1,
+    "anomalous_rows": 7,
+    "clean_rows": 23,
+    "warning_rows": 4,
+    "paid_orders": 11,
+    "sales_amount_cents": 6600,
+    "missing_city_rows": 2,
+    "invalid_time_rows": 1
+  },
+  "rules": [
+    {
+      "rule": "exact_duplicate",
+      "severity": "warning",
+      "action": "drop_duplicate",
+      "message": "完全重复的多余副本；保留首次记录",
+      "count": 1,
+      "records": [
+        31
+      ]
+    },
+    {
+      "rule": "invalid_price",
+      "severity": "error",
+      "action": "quarantine",
+      "message": "unit_price 必须是非负有限金额，最多两位小数且不超过 9999999999.99（仅限半角数字 0-9，不接受下划线、全角数字和科学计数法）",
+      "count": 1,
+      "records": [
+        29
+      ]
+    },
+    {
+      "rule": "invalid_quantity",
+      "severity": "error",
+      "action": "quarantine",
+      "message": "quantity 必须是 1～2147483647 的整数（仅限半角数字 0-9，不接受下划线、全角数字和科学计数法）",
+      "count": 2,
+      "records": [
+        28,
+        30
+      ]
+    },
+    {
+      "rule": "invalid_time",
+      "severity": "warning",
+      "action": "set_null",
+      "message": "时间无法解析；留空但保留订单及 paid 金额",
+      "count": 1,
+      "records": [
+        12
+      ]
+    },
+    {
+      "rule": "missing_city",
+      "severity": "warning",
+      "action": "fill_unknown",
+      "message": "缺失城市补为未知，不推测真实城市",
+      "count": 2,
+      "records": [
+        11,
+        13
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "record": 2,
+      "order_id": "SYN001",
+      "raw": {
+        "order_id": "SYN001",
+        "user_id": "DEMO_USER_001",
+        "product_name": "synthetic-product-01",
+        "quantity": "1",
+        "unit_price": "1.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-01",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-01",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 100,
+        "order_amount_cents": 100,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 3,
+      "order_id": "SYN002",
+      "raw": {
+        "order_id": "SYN002",
+        "user_id": "DEMO_USER_002",
+        "product_name": "synthetic-product-02",
+        "quantity": "1",
+        "unit_price": "2.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-02",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-02",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 200,
+        "order_amount_cents": 200,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 4,
+      "order_id": "SYN003",
+      "raw": {
+        "order_id": "SYN003",
+        "user_id": "DEMO_USER_003",
+        "product_name": "synthetic-product-03",
+        "quantity": "1",
+        "unit_price": "3.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-03",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-03",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 300,
+        "order_amount_cents": 300,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 5,
+      "order_id": "SYN004",
+      "raw": {
+        "order_id": "SYN004",
+        "user_id": "DEMO_USER_004",
+        "product_name": "synthetic-product-04",
+        "quantity": "1",
+        "unit_price": "4.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-04",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-04",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 400,
+        "order_amount_cents": 400,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 6,
+      "order_id": "SYN005",
+      "raw": {
+        "order_id": "SYN005",
+        "user_id": "DEMO_USER_005",
+        "product_name": "synthetic-product-05",
+        "quantity": "1",
+        "unit_price": "5.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-05",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-05",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 500,
+        "order_amount_cents": 500,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 7,
+      "order_id": "SYN006",
+      "raw": {
+        "order_id": "SYN006",
+        "user_id": "DEMO_USER_006",
+        "product_name": "synthetic-product-06",
+        "quantity": "1",
+        "unit_price": "6.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-06",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-06",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 600,
+        "order_amount_cents": 600,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 8,
+      "order_id": "SYN007",
+      "raw": {
+        "order_id": "SYN007",
+        "user_id": "DEMO_USER_007",
+        "product_name": "synthetic-product-07",
+        "quantity": "1",
+        "unit_price": "7.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-07",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-07",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 700,
+        "order_amount_cents": 700,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 9,
+      "order_id": "SYN008",
+      "raw": {
+        "order_id": "SYN008",
+        "user_id": "DEMO_USER_008",
+        "product_name": "synthetic-product-08",
+        "quantity": "1",
+        "unit_price": "8.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-08",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-08",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 800,
+        "order_amount_cents": 800,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 10,
+      "order_id": "SYN009",
+      "raw": {
+        "order_id": "SYN009",
+        "user_id": "DEMO_USER_009",
+        "product_name": "synthetic-product-01",
+        "quantity": "1",
+        "unit_price": "9.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-09",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-09",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 900,
+        "order_amount_cents": 900,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 11,
+      "order_id": "SYN010",
+      "raw": {
+        "order_id": "SYN010",
+        "user_id": "DEMO_USER_010",
+        "product_name": "synthetic-product-02",
+        "quantity": "1",
+        "unit_price": "10.00",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [
+        {
+          "rule": "missing_city",
+          "severity": "warning",
+          "action": "fill_unknown",
+          "message": "缺失城市补为未知，不推测真实城市"
+        }
+      ],
+      "clean": {
+        "city": "未知",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 1000,
+        "order_amount_cents": 1000,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 12,
+      "order_id": "SYN011",
+      "raw": {
+        "order_id": "SYN011",
+        "user_id": "DEMO_USER_011",
+        "product_name": "synthetic-product-03",
+        "quantity": "1",
+        "unit_price": "11.00",
+        "order_time": "2027-02-30 09:00:00",
+        "city": "synthetic-city-02",
+        "status": "paid"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [
+        {
+          "rule": "invalid_time",
+          "severity": "warning",
+          "action": "set_null",
+          "message": "时间无法解析；留空但保留订单及 paid 金额"
+        }
+      ],
+      "clean": {
+        "city": "synthetic-city-02",
+        "status": "paid",
+        "quantity": 1,
+        "unit_price_cents": 1100,
+        "order_amount_cents": 1100,
+        "order_time": null
+      }
+    },
+    {
+      "record": 13,
+      "order_id": "SYN012",
+      "raw": {
+        "order_id": "SYN012",
+        "user_id": "DEMO_USER_012",
+        "product_name": "synthetic-product-04",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [
+        {
+          "rule": "missing_city",
+          "severity": "warning",
+          "action": "fill_unknown",
+          "message": "缺失城市补为未知，不推测真实城市"
+        }
+      ],
+      "clean": {
+        "city": "未知",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 14,
+      "order_id": "SYN013",
+      "raw": {
+        "order_id": "SYN013",
+        "user_id": "DEMO_USER_013",
+        "product_name": "synthetic-product-05",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-04",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-04",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 15,
+      "order_id": "SYN014",
+      "raw": {
+        "order_id": "SYN014",
+        "user_id": "DEMO_USER_014",
+        "product_name": "synthetic-product-06",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-05",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-05",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 16,
+      "order_id": "SYN015",
+      "raw": {
+        "order_id": "SYN015",
+        "user_id": "DEMO_USER_015",
+        "product_name": "synthetic-product-07",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-06",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-06",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 17,
+      "order_id": "SYN016",
+      "raw": {
+        "order_id": "SYN016",
+        "user_id": "DEMO_USER_016",
+        "product_name": "synthetic-product-08",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-07",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-07",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 18,
+      "order_id": "SYN017",
+      "raw": {
+        "order_id": "SYN017",
+        "user_id": "DEMO_USER_017",
+        "product_name": "synthetic-product-01",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-08",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-08",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 19,
+      "order_id": "SYN018",
+      "raw": {
+        "order_id": "SYN018",
+        "user_id": "DEMO_USER_018",
+        "product_name": "synthetic-product-02",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-09",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-09",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 20,
+      "order_id": "SYN019",
+      "raw": {
+        "order_id": "SYN019",
+        "user_id": "DEMO_USER_019",
+        "product_name": "synthetic-product-03",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-01",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-01",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 21,
+      "order_id": "SYN020",
+      "raw": {
+        "order_id": "SYN020",
+        "user_id": "DEMO_USER_020",
+        "product_name": "synthetic-product-04",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-02",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-02",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 22,
+      "order_id": "SYN021",
+      "raw": {
+        "order_id": "SYN021",
+        "user_id": "DEMO_USER_021",
+        "product_name": "synthetic-product-05",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-03",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-03",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 23,
+      "order_id": "SYN022",
+      "raw": {
+        "order_id": "SYN022",
+        "user_id": "DEMO_USER_022",
+        "product_name": "synthetic-product-06",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-04",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-04",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 24,
+      "order_id": "SYN023",
+      "raw": {
+        "order_id": "SYN023",
+        "user_id": "DEMO_USER_023",
+        "product_name": "synthetic-product-07",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-05",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-05",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 25,
+      "order_id": "SYN024",
+      "raw": {
+        "order_id": "SYN024",
+        "user_id": "DEMO_USER_024",
+        "product_name": "synthetic-product-08",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-06",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-06",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 26,
+      "order_id": "SYN025",
+      "raw": {
+        "order_id": "SYN025",
+        "user_id": "DEMO_USER_025",
+        "product_name": "synthetic-product-01",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-07",
+        "status": "cancelled"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-07",
+        "status": "cancelled",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 27,
+      "order_id": "SYN026",
+      "raw": {
+        "order_id": "SYN026",
+        "user_id": "DEMO_USER_026",
+        "product_name": "synthetic-product-02",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-08",
+        "status": "completed"
+      },
+      "outcome": "accepted",
+      "duplicate_of": null,
+      "issues": [],
+      "clean": {
+        "city": "synthetic-city-08",
+        "status": "completed",
+        "quantity": 1,
+        "unit_price_cents": 125,
+        "order_amount_cents": 125,
+        "order_time": "2027-01-15 09:00:00"
+      }
+    },
+    {
+      "record": 28,
+      "order_id": "SYN027",
+      "raw": {
+        "order_id": "SYN027",
+        "user_id": "DEMO_USER_027",
+        "product_name": "synthetic-product-03",
+        "quantity": "0",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-09",
+        "status": "cancelled"
+      },
+      "outcome": "quarantined",
+      "duplicate_of": null,
+      "issues": [
+        {
+          "rule": "invalid_quantity",
+          "severity": "error",
+          "action": "quarantine",
+          "message": "quantity 必须是 1～2147483647 的整数（仅限半角数字 0-9，不接受下划线、全角数字和科学计数法）"
+        }
+      ],
+      "clean": null
+    },
+    {
+      "record": 29,
+      "order_id": "SYN028",
+      "raw": {
+        "order_id": "SYN028",
+        "user_id": "DEMO_USER_028",
+        "product_name": "synthetic-product-04",
+        "quantity": "1",
+        "unit_price": "",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-01",
+        "status": "completed"
+      },
+      "outcome": "quarantined",
+      "duplicate_of": null,
+      "issues": [
+        {
+          "rule": "invalid_price",
+          "severity": "error",
+          "action": "quarantine",
+          "message": "unit_price 必须是非负有限金额，最多两位小数且不超过 9999999999.99（仅限半角数字 0-9，不接受下划线、全角数字和科学计数法）"
+        }
+      ],
+      "clean": null
+    },
+    {
+      "record": 30,
+      "order_id": "SYN029",
+      "raw": {
+        "order_id": "SYN029",
+        "user_id": "DEMO_USER_029",
+        "product_name": "synthetic-product-05",
+        "quantity": "-1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-02",
+        "status": "cancelled"
+      },
+      "outcome": "quarantined",
+      "duplicate_of": null,
+      "issues": [
+        {
+          "rule": "invalid_quantity",
+          "severity": "error",
+          "action": "quarantine",
+          "message": "quantity 必须是 1～2147483647 的整数（仅限半角数字 0-9，不接受下划线、全角数字和科学计数法）"
+        }
+      ],
+      "clean": null
+    },
+    {
+      "record": 31,
+      "order_id": "SYN013",
+      "raw": {
+        "order_id": "SYN013",
+        "user_id": "DEMO_USER_013",
+        "product_name": "synthetic-product-05",
+        "quantity": "1",
+        "unit_price": "1.25",
+        "order_time": "2027-01-15 09:00:00",
+        "city": "synthetic-city-04",
+        "status": "cancelled"
+      },
+      "outcome": "duplicate_removed",
+      "duplicate_of": 14,
+      "issues": [
+        {
+          "rule": "exact_duplicate",
+          "severity": "warning",
+          "action": "drop_duplicate",
+          "message": "完全重复的多余副本；保留首次记录"
+        }
+      ],
+      "clean": null
+    }
+  ],
+  "stages": {
+    "read": {
+      "records": 30,
+      "fields": 8,
+      "columns": [
+        "order_id",
+        "user_id",
+        "product_name",
+        "quantity",
+        "unit_price",
+        "order_time",
+        "city",
+        "status"
+      ]
+    },
+    "validate": {
+      "accepted": 26,
+      "quarantined": 3,
+      "duplicates": 1,
+      "issues": 7,
+      "anomalous_rows": 7
+    },
+    "normalise": {
+      "missing_city": 2,
+      "invalid_time": 1,
+      "paid_orders": 11,
+      "sales_amount_cents": 6600
+    },
+    "load": {
+      "stats": {
+        "incoming": 26,
+        "written": 26,
+        "unchanged": 0,
+        "run_written": 1,
+        "issues_replaced": 1,
+        "issues_written": 7
+      },
+      "tables": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      }
+    },
+    "analyze": {
+      "total_orders": 26,
+      "paid_orders": 11,
+      "sales_amount_cents": 6600,
+      "city_rows": 10,
+      "product_rows": 8
+    },
+    "report": {
+      "files": [
+        "batch_city_sales.csv",
+        "batch_product_sales.csv",
+        "city_sales.csv",
+        "database_summary.json",
+        "manifest.json",
+        "orders_clean.csv",
+        "product_sales.csv",
+        "quality_issues.csv",
+        "quality_metrics.json",
+        "report.md"
+      ]
+    }
+  },
+  "sql": {
+    "summary_query": "SELECT COUNT(*) AS total_orders,\n       COALESCE(SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END), 0) AS paid_orders,\n       COALESCE(SUM(CASE WHEN status = 'paid' THEN order_amount_cents ELSE 0 END), 0) AS sales_amount_cents\nFROM orders",
+    "summary": {
+      "total_orders": 26,
+      "paid_orders": 11,
+      "sales_amount_cents": 6600
+    },
+    "cities": [
+      {
+        "city": "synthetic-city-02",
+        "order_count": 2,
+        "quantity": 2,
+        "sales_amount_cents": 1300
+      },
+      {
+        "city": "未知",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 1000
+      },
+      {
+        "city": "synthetic-city-09",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 900
+      },
+      {
+        "city": "synthetic-city-08",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 800
+      },
+      {
+        "city": "synthetic-city-07",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 700
+      },
+      {
+        "city": "synthetic-city-06",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 600
+      },
+      {
+        "city": "synthetic-city-05",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 500
+      },
+      {
+        "city": "synthetic-city-04",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 400
+      },
+      {
+        "city": "synthetic-city-03",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 300
+      },
+      {
+        "city": "synthetic-city-01",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 100
+      }
+    ],
+    "products": [
+      {
+        "product_name": "synthetic-product-03",
+        "order_count": 2,
+        "quantity": 2,
+        "sales_amount_cents": 1400
+      },
+      {
+        "product_name": "synthetic-product-02",
+        "order_count": 2,
+        "quantity": 2,
+        "sales_amount_cents": 1200
+      },
+      {
+        "product_name": "synthetic-product-01",
+        "order_count": 2,
+        "quantity": 2,
+        "sales_amount_cents": 1000
+      },
+      {
+        "product_name": "synthetic-product-08",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 800
+      },
+      {
+        "product_name": "synthetic-product-07",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 700
+      },
+      {
+        "product_name": "synthetic-product-06",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 600
+      },
+      {
+        "product_name": "synthetic-product-05",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 500
+      },
+      {
+        "product_name": "synthetic-product-04",
+        "order_count": 1,
+        "quantity": 1,
+        "sales_amount_cents": 400
+      }
+    ]
+  },
+  "reconciliation": {
+    "checks": [
+      {
+        "id": "paid_sales",
+        "label": "paid 销售额（分）",
+        "sql": 6600,
+        "other": 6600,
+        "other_label": "独立重算：标准库 csv + Decimal 直读原始文件（仅覆盖本样本）",
+        "left_label": "SQL 查询结果",
+        "match": true
+      },
+      {
+        "id": "paid_sales_batch",
+        "label": "paid 销售额（分）",
+        "sql": 6600,
+        "other": 6600,
+        "other_label": "Pandas / Decimal 本批汇总",
+        "left_label": "SQL 查询结果",
+        "match": true
+      },
+      {
+        "id": "paid_orders",
+        "label": "paid 订单数",
+        "sql": 11,
+        "other": 11,
+        "other_label": "Pandas 本批汇总",
+        "left_label": "SQL 查询结果",
+        "match": true
+      },
+      {
+        "id": "total_orders",
+        "label": "入库订单数",
+        "sql": 26,
+        "other": 26,
+        "other_label": "质量层接收订单数",
+        "left_label": "SQL 查询结果",
+        "match": true
+      },
+      {
+        "id": "city_sum",
+        "label": "城市分组合计（分）",
+        "sql": 6600,
+        "other": 6600,
+        "other_label": "SQL 全库 paid 总额",
+        "left_label": "SQL 查询结果",
+        "match": true
+      },
+      {
+        "id": "product_sum",
+        "label": "商品分组合计（分）",
+        "sql": 6600,
+        "other": 6600,
+        "other_label": "SQL 全库 paid 总额",
+        "left_label": "SQL 查询结果",
+        "match": true
+      },
+      {
+        "id": "rows",
+        "label": "原始行 = 接收 + 隔离 + 重复",
+        "sql": 30,
+        "other": 30,
+        "other_label": "三类之和",
+        "left_label": "原始行数",
+        "match": true
+      }
+    ],
+    "by_city": [
+      {
+        "name": "synthetic-city-02",
+        "sql_cents": 1300,
+        "pandas_cents": 1300,
+        "match": true
+      },
+      {
+        "name": "未知",
+        "sql_cents": 1000,
+        "pandas_cents": 1000,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-09",
+        "sql_cents": 900,
+        "pandas_cents": 900,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-08",
+        "sql_cents": 800,
+        "pandas_cents": 800,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-07",
+        "sql_cents": 700,
+        "pandas_cents": 700,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-06",
+        "sql_cents": 600,
+        "pandas_cents": 600,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-05",
+        "sql_cents": 500,
+        "pandas_cents": 500,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-04",
+        "sql_cents": 400,
+        "pandas_cents": 400,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-03",
+        "sql_cents": 300,
+        "pandas_cents": 300,
+        "match": true
+      },
+      {
+        "name": "synthetic-city-01",
+        "sql_cents": 100,
+        "pandas_cents": 100,
+        "match": true
+      }
+    ],
+    "by_product": [
+      {
+        "name": "synthetic-product-03",
+        "sql_cents": 1400,
+        "pandas_cents": 1400,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-02",
+        "sql_cents": 1200,
+        "pandas_cents": 1200,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-01",
+        "sql_cents": 1000,
+        "pandas_cents": 1000,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-08",
+        "sql_cents": 800,
+        "pandas_cents": 800,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-07",
+        "sql_cents": 700,
+        "pandas_cents": 700,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-06",
+        "sql_cents": 600,
+        "pandas_cents": 600,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-05",
+        "sql_cents": 500,
+        "pandas_cents": 500,
+        "match": true
+      },
+      {
+        "name": "synthetic-product-04",
+        "sql_cents": 400,
+        "pandas_cents": 400,
+        "match": true
+      }
+    ]
+  },
+  "scenarios": {
+    "first_load": {
+      "stats": {
+        "incoming": 26,
+        "written": 26,
+        "unchanged": 0,
+        "run_written": 1,
+        "issues_replaced": 1,
+        "issues_written": 7
+      },
+      "writes": [
+        {
+          "table": "dq_issues",
+          "op": "INSERT",
+          "count": 7
+        },
+        {
+          "table": "etl_runs",
+          "op": "INSERT",
+          "count": 1
+        },
+        {
+          "table": "orders",
+          "op": "INSERT",
+          "count": 26
+        }
+      ],
+      "before": {
+        "orders": 0,
+        "etl_runs": 0,
+        "dq_issues": 0,
+        "paid_orders": 0,
+        "paid_sales_cents": 0,
+        "digest": null
+      },
+      "after": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      }
+    },
+    "rerun": {
+      "stats": {
+        "incoming": 26,
+        "written": 0,
+        "unchanged": 26,
+        "run_written": 0,
+        "issues_replaced": 0,
+        "issues_written": 0
+      },
+      "writes": [],
+      "before": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      },
+      "after": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      },
+      "state_identical": true,
+      "artifacts_identical": true
+    },
+    "failure": {
+      "batch": {
+        "name": "orders_batch_b.csv",
+        "raw_rows": 31,
+        "accepted_orders": 27
+      },
+      "diff": [
+        {
+          "order_id": "SYN001",
+          "kind": "update",
+          "changes": {
+            "status": [
+              "paid",
+              "cancelled"
+            ]
+          }
+        },
+        {
+          "order_id": "SYN002",
+          "kind": "update",
+          "changes": {
+            "quantity": [
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "order_id": "SYN030",
+          "kind": "insert",
+          "values": {
+            "quantity": 2,
+            "unit_price_cents": 350,
+            "city": "synthetic-city-03",
+            "status": "paid",
+            "order_amount_cents": 700
+          }
+        }
+      ],
+      "injected": {
+        "order_id": "SYN002",
+        "field": "quantity",
+        "value": 0,
+        "constraint": "CHECK(quantity > 0)"
+      },
+      "writes_before_failure": [
+        {
+          "table": "etl_runs",
+          "op": "INSERT",
+          "key": "9cc127172cc1"
+        },
+        {
+          "table": "orders",
+          "op": "UPDATE",
+          "key": "SYN001",
+          "detail": "paid->cancelled"
+        }
+      ],
+      "error": "SQLite 写入失败，当前批次已回滚；请检查输入与表结构。",
+      "before": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      },
+      "after": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      },
+      "rolled_back": true,
+      "syn001_status_after": "paid"
+    },
+    "recovery": {
+      "stats": {
+        "incoming": 27,
+        "written": 2,
+        "unchanged": 25,
+        "run_written": 1,
+        "issues_replaced": 1,
+        "issues_written": 7
+      },
+      "writes": [
+        {
+          "table": "dq_issues",
+          "op": "INSERT",
+          "count": 7
+        },
+        {
+          "table": "etl_runs",
+          "op": "INSERT",
+          "count": 1
+        },
+        {
+          "table": "orders",
+          "op": "INSERT",
+          "count": 1
+        },
+        {
+          "table": "orders",
+          "op": "UPDATE",
+          "count": 1
+        }
+      ],
+      "before": {
+        "orders": 26,
+        "etl_runs": 1,
+        "dq_issues": 7,
+        "paid_orders": 11,
+        "paid_sales_cents": 6600,
+        "digest": "29085243cbb1"
+      },
+      "after": {
+        "orders": 27,
+        "etl_runs": 2,
+        "dq_issues": 14,
+        "paid_orders": 11,
+        "paid_sales_cents": 7200,
+        "digest": "73a3a117ee0d"
+      },
+      "syn001_status_after": "cancelled"
+    }
+  }
+}
+</script>
+<!-- /build:data -->
+<!-- build:static -->
+<section id="static-summary" aria-labelledby="static-title"><h2 id="static-title">静态摘要 <span lang="en">Static summary</span></h2><p>浏览器未启用 JavaScript，下面是同一份 demo-data.json 的文字摘要；交互视图需要启用 JavaScript。</p><h3>数量</h3><table><tbody><tr><th scope="row">原始行</th><td>30</td></tr><tr><th scope="row">接收</th><td>26</td></tr><tr><th scope="row">隔离</th><td>3</td></tr><tr><th scope="row">重复副本</th><td>1</td></tr><tr><th scope="row">paid 订单</th><td>11</td></tr><tr><th scope="row">paid 销售额</th><td>66.00 元（6600 分）</td></tr></tbody></table><h3>被隔离、丢弃或带警告的行</h3><table><thead><tr><th>记录</th><th>订单号</th><th>结果</th><th>规则</th></tr></thead><tbody><tr><td>11</td><td>SYN010</td><td>接收</td><td>missing_city（fill_unknown）</td></tr><tr><td>12</td><td>SYN011</td><td>接收</td><td>invalid_time（set_null）</td></tr><tr><td>13</td><td>SYN012</td><td>接收</td><td>missing_city（fill_unknown）</td></tr><tr><td>28</td><td>SYN027</td><td>隔离</td><td>invalid_quantity（quarantine）</td></tr><tr><td>29</td><td>SYN028</td><td>隔离</td><td>invalid_price（quarantine）</td></tr><tr><td>30</td><td>SYN029</td><td>隔离</td><td>invalid_quantity（quarantine）</td></tr><tr><td>31</td><td>SYN013</td><td>重复副本</td><td>exact_duplicate（drop_duplicate）</td></tr></tbody></table><h3>SQL 对账</h3><table><thead><tr><th>项目</th><th>SQL</th><th>对照值</th><th>结果</th></tr></thead><tbody><tr><td>paid 销售额（分）</td><td>6600</td><td>6600（独立重算：标准库 csv + Decimal 直读原始文件（仅覆盖本样本））</td><td>一致</td></tr><tr><td>paid 销售额（分）</td><td>6600</td><td>6600（Pandas / Decimal 本批汇总）</td><td>一致</td></tr><tr><td>paid 订单数</td><td>11</td><td>11（Pandas 本批汇总）</td><td>一致</td></tr><tr><td>入库订单数</td><td>26</td><td>26（质量层接收订单数）</td><td>一致</td></tr><tr><td>城市分组合计（分）</td><td>6600</td><td>6600（SQL 全库 paid 总额）</td><td>一致</td></tr><tr><td>商品分组合计（分）</td><td>6600</td><td>6600（SQL 全库 paid 总额）</td><td>一致</td></tr><tr><td>原始行 = 接收 + 隔离 + 重复</td><td>30</td><td>30（三类之和）</td><td>一致</td></tr></tbody></table><h3>事务失败与重跑</h3><ul><li>同一文件重跑：接收 26，写入 0，未变化 26；数据库状态完全相同。</li><li>第二批写入失败：失败前事务内已有 2 次写入，数据库报错后整批回滚；订单 26 → 26，批次 1 → 1，问题记录 7 → 7，状态完全相同。</li><li>修正后重跑：接收 27，写入 2，未变化 25；订单 27，paid 销售额 72.00 元。</li></ul></section>
+<!-- /build:static -->

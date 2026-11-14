@@ -1,0 +1,3 @@
+/* Loaded only when JavaScript is disabled: show the generated static summary. */
+#app, .needs-js { display: none; }
+#static-summary { display: block; }

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass, field
 from decimal import Decimal
 import hashlib
@@ -79,8 +80,26 @@ def _json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8")
 
 
+def _spreadsheet_text(value: Any) -> Any:
+    if not isinstance(value, str) or not value:
+        return value
+    # Inspect leading whitespace/control/BOM without stripping the exported value.
+    start = 0
+    while start < len(value) and (value[start].isspace() or ord(value[start]) < 32 or value[start] == "\ufeff"):
+        start += 1
+    probe = value[start:]
+    if value[0] in "\t\r\n" or probe.startswith(tuple("=+-@＝＋－＠")):
+        # Visible text marker survives ordinary CSV save/reopen; quotes alone are not
+        # formula protection. Source, in-memory frames and database remain untouched.
+        return "text:" + value
+    return value
+
+
 def _csv(path: Path, frame: pd.DataFrame) -> None:
-    frame.to_csv(path, index=False, encoding="utf-8-sig", date_format="%Y-%m-%d %H:%M:%S", lineterminator="\n")
+    frame.map(_spreadsheet_text).to_csv(
+        path, index=False, encoding="utf-8-sig", date_format="%Y-%m-%d %H:%M:%S",
+        lineterminator="\n", quoting=csv.QUOTE_ALL,
+    )
 
 
 def _sales_rows(orders: pd.DataFrame, dimension: str) -> list[dict]:

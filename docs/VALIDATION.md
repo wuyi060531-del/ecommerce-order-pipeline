@@ -2,11 +2,15 @@
 
 这里记录实际跑过的命令和结果。没有执行过的内容不会写成通过。结构化的数据在 [evidence/validation.json](evidence/validation.json)。
 
-## 当前状态
+## CSV 防护与静态演示的组合验收（2026-11-22）
 
-测试总数现为 145 项：在原有 129 项上，为数字格式严格校验新增了 16 项回归（见文末“数字格式严格校验”一节）。下面的表格和之后带日期的记录是当时的结果，当时是 129 项，没有改写。
+Python 3.12 上 `python -m pytest tests/v1 -q` 通过 172 项，保留一个既有 Pandas 警告。Ruff、发布清单、静态生成器 `--check` 与 SQLite 演示通过。隔离 MySQL 8.4.13 的七组验收通过，容器重启前后 SQL 指标文件相同。当前候选的远端矩阵见 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions)。
 
-最新提交 `09ca67c` 的 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42326079715) 四项任务全部成功：
+## 历史基线
+
+数字格式改动时测试总数为 145 项：在原有 129 项上，为数字格式严格校验新增了 16 项回归（见文末“数字格式严格校验”一节）。下面的表格和之后带日期的记录是当时的结果，当时是 129 项，没有改写。
+
+历史提交 `09ca67c` 的 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions/runs/42326079715) 四项任务全部成功：
 
 | 任务 | 内容 |
 |---|---|

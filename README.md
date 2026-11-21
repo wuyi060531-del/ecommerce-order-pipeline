@@ -92,7 +92,7 @@ CSV 导出对危险公式前缀增加可见 `text:` 标记，仅影响展示副�
 .venv/bin/python -m scripts.check_release
 ```
 
-本轮本机共 171 项测试通过，覆盖质量规则边界、输入保护、SQLite 事务和 SQL、重跑与 A/B/A、失败恢复、CLI 和发布文件完整性。[GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions) 既有基线在 Python 3.10 和 3.12 上各通过 145 项（本轮新提交以 PR CI 为准），另有 MySQL 8.4 的事务、幂等和重启对账，以及 Docker 构建与冒烟测试。具体环境、命令和已知限制见 [VALIDATION](docs/VALIDATION.md)。
+CSV 导出防护和静态演示的组合候选在 Python 3.12 上通过 172 项测试，覆盖质量规则边界、SQLite 事务、SQL 对账、重跑、导出和快照复现。Python 3.10/3.12、真实 MySQL 及应用容器结果见 [GitHub Actions](https://github.com/wuyi060531-del/ecommerce-order-pipeline/actions)。命令和边界见 [VALIDATION](docs/VALIDATION.md)。
 
 性能脚本只接受带 `synthetic` 标记且哈希匹配的数据，按 1000 / 10000 / 50000 行逐档运行，每档用独立进程和新的 SQLite：
 
